@@ -88,14 +88,14 @@
   .nav-btn.active::after { width: 60%; }
 
   /* ── PAGES ── */
-  .page { display: none; padding: 18px 16px 100px; animation: fadeIn .25s ease; }
+  .page { display: none; padding: 18px 12px 100px; animation: fadeIn .25s ease; }
   .page.active { display: block; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
   /* ── CARDS ── */
   .card {
     background: var(--card); border-radius: var(--radius);
-    box-shadow: var(--shadow); padding: 18px; margin-bottom: 16px;
+    box-shadow: var(--shadow); padding: 14px 12px; margin-bottom: 16px;
     border: 1.5px solid var(--border);
   }
   .card-title {
@@ -155,10 +155,10 @@
     text-align: center; font-size: 11px; font-weight: 700;
     color: var(--muted); margin-bottom: 6px;
   }
-  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; width: 100%; box-sizing: border-box; }
   .cal-day {
     aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-    border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
+    border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; min-width: 0;
     transition: all .15s; position: relative;
   }
   .cal-day.empty { cursor: default; }
