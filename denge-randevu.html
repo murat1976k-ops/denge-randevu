@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Denge Randevu">
+<meta name="theme-color" content="#5ecdc8">
+<title>Denge Psikolojik Danışmanlık — Randevu</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:    #5ecdc8;
+    --teal2:   #3bb8b2;
+    --pink:    #f7a8c4;
+    --pink2:   #f07fb0;
+    --lavender:#c5b4e3;
+    --peach:   #ffd6b0;
+    --mint:    #b5ead7;
+    --yellow:  #ffe08a;
+    --coral:   #ff8c7a;
+    --bg:      #f4f9fb;
+    --card:    #ffffff;
+    --text:    #2d4a52;
+    --muted:   #8aa5ad;
+    --border:  #d8edf0;
+    --shadow:  0 4px 24px rgba(94,205,200,0.13);
+    --radius:  18px;
+    --font:    'Quicksand', sans-serif;
+    --font2:   'Nunito', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal2) 60%, var(--lavender) 100%);
+    padding: 18px 20px 14px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(94,205,200,0.25);
+  }
+  .topbar-inner { display: flex; align-items: center; justify-content: space-between; }
+  .logo-area { display: flex; align-items: center; gap: 10px; }
+  .logo-circle {
+    width: 42px; height: 42px;
+    background: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .logo-text { color: white; }
+  .logo-text .brand { font-family: var(--font2); font-weight: 900; font-size: 16px; letter-spacing: -0.3px; }
+  .logo-text .sub { font-size: 11px; opacity: 0.88; font-weight: 600; }
+
+  /* ── NAV TABS ── */
+  .nav {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid var(--border);
+    position: sticky; top: 74px; z-index: 99;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .nav-btn {
+    flex: 1; padding: 11px 4px; border: none; background: none;
+    font-family: var(--font); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer; transition: all .2s;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .nav-btn .nav-icon { font-size: 18px; }
+  .nav-btn.active { color: var(--teal2); }
+  .nav-btn.active .nav-icon { transform: scale(1.15); }
+  .nav-btn::after {
+    content: ''; display: block; height: 3px; width: 0;
+    background: var(--teal); border-radius: 2px; transition: width .2s;
+    margin-top: 2px;
+  }
+  .nav-btn.active::after { width: 60%; }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 18px 16px 100px; animation: fadeIn .25s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 18px; margin-bottom: 16px;
+    border: 1.5px solid var(--border);
+  }
+  .card-title {
+    font-family: var(--font2); font-weight: 800; font-size: 15px;
+    color: var(--text); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .card-title .badge {
+    background: linear-gradient(135deg, var(--teal), var(--lavender));
+    color: white; font-size: 10px; padding: 2px 8px;
+    border-radius: 20px; font-weight: 700;
+  }
+
+  /* ── FORM ── */
+  label { font-size: 12px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 5px; margin-top: 12px; }
+  input, select, textarea {
+    width: 100%; padding: 12px 14px;
+    border: 2px solid var(--border); border-radius: 12px;
+    font-family: var(--font); font-size: 14px; color: var(--text);
+    background: var(--bg); outline: none; transition: border .2s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--teal); background: white; }
+  textarea { min-height: 90px; resize: vertical; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: block; width: 100%; padding: 14px;
+    border: none; border-radius: 14px; cursor: pointer;
+    font-family: var(--font2); font-weight: 800; font-size: 15px;
+    transition: all .18s; margin-top: 14px;
+    letter-spacing: 0.2px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-teal { background: linear-gradient(135deg, var(--teal), var(--teal2)); color: white; box-shadow: 0 4px 14px rgba(94,205,200,0.4); }
+  .btn-pink { background: linear-gradient(135deg, var(--pink2), var(--pink)); color: white; box-shadow: 0 4px 14px rgba(247,168,196,0.45); }
+  .btn-coral { background: linear-gradient(135deg, var(--coral), #ffaa8a); color: white; box-shadow: 0 4px 14px rgba(255,140,122,0.4); }
+  .btn-lavender { background: linear-gradient(135deg, var(--lavender), #a89ad6); color: white; box-shadow: 0 4px 14px rgba(197,180,227,0.5); }
+  .btn-mint { background: linear-gradient(135deg, var(--mint), #7dd3b0); color: var(--text); box-shadow: 0 4px 14px rgba(181,234,215,0.5); }
+  .btn-yellow { background: linear-gradient(135deg, var(--yellow), #ffc94a); color: var(--text); box-shadow: 0 4px 14px rgba(255,224,138,0.5); }
+  .btn-sm { padding: 9px 16px; font-size: 13px; width: auto; display: inline-block; margin-top: 0; border-radius: 10px; }
+  .btn-outline {
+    background: none; border: 2px solid var(--teal); color: var(--teal2);
+    box-shadow: none;
+  }
+
+  /* ── CALENDAR ── */
+  .cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .cal-month { font-family: var(--font2); font-weight: 800; font-size: 16px; }
+  .cal-nav { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--teal2); padding: 4px 8px; border-radius: 8px; }
+  .cal-nav:hover { background: var(--border); }
+  .cal-days-header {
+    display: grid; grid-template-columns: repeat(7,1fr);
+    text-align: center; font-size: 11px; font-weight: 700;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all .15s; position: relative;
+  }
+  .cal-day.empty { cursor: default; }
+  .cal-day.past { color: #ccc; cursor: not-allowed; }
+  .cal-day.today { background: var(--peach); color: var(--text); font-weight: 800; }
+  .cal-day.has-apt::after {
+    content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+    width: 5px; height: 5px; border-radius: 50%; background: var(--pink2);
+  }
+  .cal-day.available:hover { background: var(--teal); color: white; }
+  .cal-day.selected { background: linear-gradient(135deg, var(--teal), var(--teal2)); color: white; box-shadow: 0 2px 8px rgba(94,205,200,0.4); }
+  .cal-day.unavailable { color: #ddd; cursor: not-allowed; text-decoration: line-through; }
+  .cal-day.working { background: var(--mint); }
+  .cal-legend {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;
+    font-size: 11px; color: var(--muted);
+  }
+  .leg { display: flex; align-items: center; gap: 4px; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── TIME SLOTS ── */
+  .time-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 10px; }
+  .time-slot {
+    padding: 10px 6px; text-align: center; border-radius: 10px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    border: 2px solid var(--border); background: white;
+    transition: all .15s; color: var(--text);
+  }
+  .time-slot:hover { border-color: var(--teal); background: var(--bg); }
+  .time-slot.selected { background: linear-gradient(135deg, var(--pink2), var(--pink)); color: white; border-color: var(--pink2); box-shadow: 0 2px 8px rgba(247,168,196,0.4); }
+  .time-slot.booked { background: #f5f5f5; color: #ccc; cursor: not-allowed; border-color: #eee; }
+
+  /* ── APPOINTMENT LIST ── */
+  .apt-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px; background: var(--bg); border-radius: 14px;
+    margin-bottom: 10px; border: 1.5px solid var(--border);
+    cursor: pointer; transition: all .15s;
+  }
+  .apt-item:hover { border-color: var(--teal); transform: translateX(2px); }
+  .apt-avatar {
+    width: 46px; height: 46px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .apt-info { flex: 1; }
+  .apt-name { font-family: var(--font2); font-weight: 800; font-size: 14px; }
+  .apt-time { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .apt-status {
+    font-size: 11px; font-weight: 700; padding: 4px 10px;
+    border-radius: 20px; flex-shrink: 0;
+  }
+  .status-ok { background: var(--mint); color: #2a7a5a; }
+  .status-soon { background: var(--yellow); color: #7a5a00; }
+  .status-past { background: #f0f0f0; color: #aaa; }
+
+  /* ── SETTINGS ── */
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 0; border-bottom: 1.5px solid var(--border);
+  }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-label { font-weight: 700; font-size: 14px; }
+  .setting-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .toggle {
+    width: 48px; height: 26px; background: var(--border);
+    border-radius: 13px; position: relative; cursor: pointer;
+    transition: background .2s; flex-shrink: 0;
+  }
+  .toggle.on { background: var(--teal); }
+  .toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: white; transition: transform .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .toggle.on::after { transform: translateX(22px); }
+
+  /* ── WORKING HOURS ── */
+  .day-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .day-row:last-child { border-bottom: none; }
+  .day-name { width: 52px; font-weight: 700; font-size: 13px; }
+  .day-row select { flex: 1; padding: 8px 10px; font-size: 13px; }
+
+  /* ── LOCATION BTN ── */
+  .location-big {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--lavender) 100%);
+    border-radius: 20px; padding: 22px;
+    text-align: center; color: white; margin-bottom: 16px;
+    box-shadow: 0 6px 24px rgba(94,205,200,0.3);
+  }
+  .location-big .loc-icon { font-size: 48px; margin-bottom: 8px; }
+  .location-big .loc-title { font-family: var(--font2); font-weight: 900; font-size: 17px; }
+  .location-big .loc-addr { font-size: 13px; opacity: 0.88; margin-top: 4px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(45,74,82,0.45); backdrop-filter: blur(4px);
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 430px; padding: 24px 20px 40px;
+    animation: slideUp .3s ease;
+    max-height: 90vh; overflow-y: auto;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle {
+    width: 40px; height: 4px; background: var(--border);
+    border-radius: 2px; margin: 0 auto 18px;
+  }
+  .modal-title { font-family: var(--font2); font-weight: 900; font-size: 18px; margin-bottom: 16px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: white; padding: 12px 22px;
+    border-radius: 30px; font-size: 13px; font-weight: 700;
+    opacity: 0; transition: all .3s; z-index: 300; white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── STATS ROW ── */
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .stat-box {
+    background: white; border-radius: 16px; padding: 14px 10px;
+    text-align: center; border: 1.5px solid var(--border);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  .stat-num { font-family: var(--font2); font-weight: 900; font-size: 22px; }
+  .stat-label { font-size: 10px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+
+  /* ── EMPTY STATE ── */
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty .empty-icon { font-size: 52px; margin-bottom: 10px; }
+  .empty p { font-size: 14px; font-weight: 600; }
+
+  /* ── CHIP TAGS ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    cursor: pointer; border: 2px solid transparent; transition: all .15s;
+  }
+  .chip.teal { background: rgba(94,205,200,0.15); color: var(--teal2); border-color: var(--teal); }
+  .chip.pink { background: rgba(247,168,196,0.2); color: var(--pink2); border-color: var(--pink); }
+  .chip.selected-chip { background: var(--teal); color: white; border-color: var(--teal); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  
+  .section-divider {
+    text-align: center; font-size: 11px; font-weight: 700;
+    color: var(--muted); margin: 16px 0 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .whatsapp-btn {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: white; display: flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 13px; border-radius: 14px; width: 100%;
+    border: none; cursor: pointer; font-family: var(--font2);
+    font-weight: 800; font-size: 15px; margin-top: 10px;
+    box-shadow: 0 4px 14px rgba(37,211,102,0.4);
+    transition: all .18s;
+  }
+  .whatsapp-btn:active { transform: scale(0.97); }
+
+  .info-box {
+    background: linear-gradient(135deg, rgba(94,205,200,0.1), rgba(197,180,227,0.1));
+    border: 1.5px solid var(--teal);
+    border-radius: 12px; padding: 12px 14px;
+    font-size: 13px; color: var(--teal2); font-weight: 600;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo-area">
+      <div class="logo-circle">🧠</div>
+      <div class="logo-text">
+        <div class="brand">Denge</div>
+        <div class="sub">Psikolojik Danışmanlık</div>
+      </div>
+    </div>
+    <div style="color:white;font-size:22px;cursor:pointer;" onclick="openSettings()">⚙️</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('home',this)">
+    <span class="nav-icon">🏠</span>Ana Sayfa
+  </button>
+  <button class="nav-btn" onclick="showPage('new',this)">
+    <span class="nav-icon">➕</span>Randevu
+  </button>
+  <button class="nav-btn" onclick="showPage('list',this)">
+    <span class="nav-icon">📋</span>Liste
+  </button>
+  <button class="nav-btn" onclick="showPage('location',this)">
+    <span class="nav-icon">📍</span>Konum
+  </button>
+</div>
+
+<!-- ═══════════════════ HOME PAGE ═══════════════════ -->
+<div class="page active" id="page-home">
+
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-num" id="stat-total" style="color:var(--teal2)">0</div>
+      <div class="stat-label">Toplam</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="stat-today" style="color:var(--pink2)">0</div>
+      <div class="stat-label">Bugün</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="stat-week" style="color:var(--lavender)">0</div>
+      <div class="stat-label">Bu Hafta</div>
+    </div>
+  </div>
+
+  <!-- 3-MONTH CALENDAR -->
+  <div class="card">
+    <div class="card-title">📅 3 Aylık Takvim <span class="badge">AKTİF</span></div>
+    <div class="cal-header">
+      <button class="cal-nav" onclick="prevMonth()">‹</button>
+      <div class="cal-month" id="cal-month-label"></div>
+      <button class="cal-nav" onclick="nextMonth()">›</button>
+    </div>
+    <div class="cal-days-header">
+      <div>Pz</div><div>Pt</div><div>Sa</div><div>Ça</div><div>Pe</div><div>Cu</div><div>Ct</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--mint)"></div>Çalışma günü</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--pink2)"></div>Randevulu</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div>Seçili</div>
+    </div>
+  </div>
+
+  <!-- TODAY'S APPOINTMENTS -->
+  <div class="card">
+    <div class="card-title">⏰ Bugünün Randevuları</div>
+    <div id="today-list">
+      <div class="empty"><div class="empty-icon">🌸</div><p>Bugün randevu yok</p></div>
+    </div>
+  </div>
+
+  <!-- UPCOMING -->
+  <div class="card">
+    <div class="card-title">🔜 Yaklaşan Randevular</div>
+    <div id="upcoming-list">
+      <div class="empty"><div class="empty-icon">📭</div><p>Yaklaşan randevu yok</p></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════ NEW APPOINTMENT PAGE ═══════════════════ -->
+<div class="page" id="page-new">
+
+  <div class="card">
+    <div class="card-title">👤 Danışan Bilgileri</div>
+    <label>Ad Soyad *</label>
+    <input type="text" id="client-name" placeholder="Örn: Ayşe Kaya">
+    <label>Telefon (WhatsApp)</label>
+    <input type="tel" id="client-phone" placeholder="05XX XXX XX XX">
+    <label>Seans Türü</label>
+    <div class="chips" id="session-type-chips">
+      <div class="chip teal selected-chip" onclick="selectChip(this,'session-type-chips')">Bireysel</div>
+      <div class="chip teal" onclick="selectChip(this,'session-type-chips')">Çift</div>
+      <div class="chip teal" onclick="selectChip(this,'session-type-chips')">Aile</div>
+    </div>
+    <label>Not (opsiyonel)</label>
+    <textarea id="client-note" placeholder="Danışanla ilgili not..."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📅 Tarih Seçin</div>
+    <div class="cal-header">
+      <button class="cal-nav" onclick="prevMonthNew()">‹</button>
+      <div class="cal-month" id="new-cal-month-label"></div>
+      <button class="cal-nav" onclick="nextMonthNew()">›</button>
+    </div>
+    <div class="cal-days-header">
+      <div>Pz</div><div>Pt</div><div>Sa</div><div>Ça</div><div>Pe</div><div>Cu</div><div>Ct</div>
+    </div>
+    <div class="cal-grid" id="new-cal-grid"></div>
+  </div>
+
+  <div class="card" id="time-card" style="display:none">
+    <div class="card-title">🕐 Saat Seçin</div>
+    <div class="time-grid" id="time-grid"></div>
+  </div>
+
+  <div class="card" id="selected-summary" style="display:none">
+    <div class="card-title">✅ Özet</div>
+    <div class="info-box" id="summary-text"></div>
+    <button class="btn btn-teal" onclick="saveAppointment()">💾 Randevuyu Kaydet</button>
+  </div>
+
+</div>
+
+<!-- ═══════════════════ LIST PAGE ═══════════════════ -->
+<div class="page" id="page-list">
+  <div style="display:flex;gap:8px;margin-bottom:14px;">
+    <input type="text" id="search-input" placeholder="🔍 Danışan ara..." oninput="renderList()" style="flex:1;margin:0;">
+    <select id="filter-sel" onchange="renderList()" style="width:auto;flex-shrink:0;padding:12px 10px;">
+      <option value="all">Tümü</option>
+      <option value="upcoming">Yaklaşan</option>
+      <option value="today">Bugün</option>
+      <option value="past">Geçmiş</option>
+    </select>
+  </div>
+  <div id="apt-list-container"></div>
+</div>
+
+<!-- ═══════════════════ LOCATION PAGE ═══════════════════ -->
+<div class="page" id="page-location">
+
+  <div class="location-big">
+    <div class="loc-icon">📍</div>
+    <div class="loc-title" id="loc-name-display">Denge Psikolojik Danışmanlık</div>
+    <div class="loc-addr" id="loc-addr-display">Adres bilgisi ayarlarda düzenlenebilir</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📤 Konum Paylaş</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:4px;">Danışanlarınıza tek tuşla konum gönderin</p>
+
+    <button class="whatsapp-btn" onclick="shareLocationWA()">
+      <span style="font-size:20px">💬</span> WhatsApp ile Konum Gönder
+    </button>
+
+    <button class="btn btn-lavender" onclick="copyAddress()" style="margin-top:10px;">
+      📋 Adresi Kopyala
+    </button>
+
+    <button class="btn btn-outline" onclick="openMaps()" style="margin-top:10px;">
+      🗺️ Haritada Aç
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✏️ Konum Bilgilerini Düzenle</div>
+    <label>Ofis Adı</label>
+    <input type="text" id="loc-name-input" placeholder="Klinik / Ofis adı">
+    <label>Adres</label>
+    <textarea id="loc-addr-input" placeholder="Tam adres..." style="min-height:70px;"></textarea>
+    <label>Google Maps Linki</label>
+    <input type="url" id="loc-maps-input" placeholder="https://maps.google.com/...">
+    <label>WhatsApp Konum Mesajı</label>
+    <textarea id="loc-wa-input" style="min-height:80px;" placeholder="Ofisimize hoş geldiniz..."></textarea>
+    <button class="btn btn-teal" onclick="saveLocation()">💾 Kaydet</button>
+  </div>
+
+</div>
+
+<!-- ═══════════════════ APPOINTMENT DETAIL MODAL ═══════════════════ -->
+<div class="modal-overlay" id="modal-apt">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-apt-title">Randevu Detayı</div>
+    <div id="modal-apt-content"></div>
+    <button class="btn btn-coral" onclick="deleteAppointment()" style="margin-top:16px;">🗑️ Randevuyu Sil</button>
+    <button class="btn btn-outline" onclick="closeModal('modal-apt')" style="margin-top:8px;">Kapat</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ SETTINGS MODAL ═══════════════════ -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ Ayarlar</div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">📨 Hatırlatma Mesajı Şablonu</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+        Kullanılabilir değişkenler: <b>{isim}</b> <b>{tarih}</b> <b>{saat}</b>
+      </p>
+      <textarea id="reminder-template" style="min-height:110px;"></textarea>
+      <button class="btn btn-pink" onclick="saveReminderTemplate()">💾 Şablonu Kaydet</button>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">🗓️ Çalışma Günleri & Saatleri</div>
+      <div id="working-days-config"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">🕐 Varsayılan Seans Süresi</div>
+      <select id="session-duration">
+        <option value="45" selected>45 dakika (varsayılan)</option>
+        
+        <option value="60">60 dakika</option>
+        <option value="90">90 dakika</option>
+      </select>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">⚙️ Genel Ayarlar</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">24s Hatırlatma</div>
+          <div class="setting-sub">Randevudan 24 saat önce bildir</div>
+        </div>
+        <div class="toggle on" id="toggle-reminder" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Hafta Sonu Göster</div>
+          <div class="setting-sub">Takvimdeki hafta sonları</div>
+        </div>
+        <div class="toggle" id="toggle-weekend" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-teal" onclick="saveSettings();closeModal('modal-settings')">✅ Ayarları Kaydet</button>
+    <button class="btn btn-outline" onclick="closeModal('modal-settings')" style="margin-top:8px;">Kapat</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let appointments = JSON.parse(localStorage.getItem('denge_apts') || '[]');
+let settings = JSON.parse(localStorage.getItem('denge_settings') || 'null') || {
+  reminderTemplate: 'Sayın {isim},\n\n{tarih} tarihinde saat {saat} için randevunuzu hatırlatmak istedik. 🌿\n\nSizi bekliyoruz.\nDenge Psikolojik Danışmanlık',
+  workingDays: { 1:true, 2:true, 3:true, 4:true, 5:true, 6:false, 0:false },
+  workStart: '09:00',
+  workEnd: '18:00',
+  sessionDuration: 45,
+};
+let location_data = JSON.parse(localStorage.getItem('denge_location') || 'null') || {
+  name: 'Denge Psikolojik Danışmanlık',
+  address: 'Nilüfer, Bursa',
+  maps: '',
+  waMsg: '',
+};
+
+// Calendar state
+let calYear, calMonth, newCalYear, newCalMonth;
+let selectedDate = null;
+let selectedTime = null;
+let currentAptId = null;
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+function init() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+  newCalYear = now.getFullYear();
+  newCalMonth = now.getMonth();
+  renderCal();
+  renderNewCal();
+  renderStats();
+  renderTodayList();
+  renderUpcoming();
+  renderList();
+  loadLocationInputs();
+  loadSettings();
+  checkReminders();
+}
+
+// ═══════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'list') renderList();
+  if (id === 'home') { renderStats(); renderTodayList(); renderUpcoming(); }
+}
+
+// ═══════════════════════════════════════════════
+//  CALENDAR (HOME)
+// ═══════════════════════════════════════════════
+const MONTHS_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const maxDate = (() => { const d = new Date(); d.setMonth(d.getMonth() + 3); return d; })();
+
+function renderCal() {
+  const label = document.getElementById('cal-month-label');
+  label.textContent = MONTHS_TR[calMonth] + ' ' + calYear;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = buildCalGrid(calYear, calMonth, false);
+}
+function prevMonth() {
+  const now = new Date();
+  if (calYear === now.getFullYear() && calMonth === now.getMonth()) return;
+  calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCal();
+}
+function nextMonth() {
+  const limit = new Date(); limit.setMonth(limit.getMonth() + 2);
+  if (calYear === limit.getFullYear() && calMonth >= limit.getMonth()) return;
+  calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCal();
+}
+
+// ═══════════════════════════════════════════════
+//  CALENDAR (NEW APT)
+// ═══════════════════════════════════════════════
+function renderNewCal() {
+  const label = document.getElementById('new-cal-month-label');
+  label.textContent = MONTHS_TR[newCalMonth] + ' ' + newCalYear;
+  const grid = document.getElementById('new-cal-grid');
+  grid.innerHTML = buildCalGrid(newCalYear, newCalMonth, true);
+}
+function prevMonthNew() {
+  const now = new Date();
+  if (newCalYear === now.getFullYear() && newCalMonth === now.getMonth()) return;
+  newCalMonth--; if (newCalMonth < 0) { newCalMonth = 11; newCalYear--; }
+  renderNewCal();
+}
+function nextMonthNew() {
+  const limit = new Date(); limit.setMonth(limit.getMonth() + 2);
+  if (newCalYear === limit.getFullYear() && newCalMonth >= limit.getMonth()) return;
+  newCalMonth++; if (newCalMonth > 11) { newCalMonth = 0; newCalYear++; }
+  renderNewCal();
+}
+
+function buildCalGrid(year, month, clickable) {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let html = '';
+  for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const isPast = date < now;
+    const isToday = date.getTime() === now.getTime();
+    const dayOfWeek = date.getDay();
+    const isWorking = settings.workingDays[dayOfWeek];
+    const dateStr = fmtDate(year, month, d);
+    const hasApt = appointments.some(a => a.date === dateStr);
+    const isSelected = selectedDate === dateStr;
+    let cls = 'cal-day';
+    if (isPast) cls += ' past';
+    else if (isSelected) cls += ' selected';
+    else if (isWorking) cls += ' available working';
+    else cls += ' unavailable';
+    if (isToday) cls += ' today';
+    if (hasApt && !isPast) cls += ' has-apt';
+    const onclick = clickable && !isPast && isWorking
+      ? `onclick="selectDate('${dateStr}')"`
+      : '';
+    html += `<div class="${cls}" ${onclick}>${d}</div>`;
+  }
+  return html;
+}
+
+function selectDate(dateStr) {
+  selectedDate = dateStr;
+  selectedTime = null;
+  renderNewCal();
+  renderTimeSlots();
+  document.getElementById('time-card').style.display = 'block';
+  document.getElementById('selected-summary').style.display = 'none';
+  document.getElementById('time-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ═══════════════════════════════════════════════
+//  TIME SLOTS
+// ═══════════════════════════════════════════════
+function renderTimeSlots() {
+  const grid = document.getElementById('time-grid');
+  const slots = generateSlots();
+  const bookedTimes = appointments.filter(a => a.date === selectedDate).map(a => a.time);
+  grid.innerHTML = slots.map(t => {
+    const isBooked = bookedTimes.includes(t);
+    const isSelected = t === selectedTime;
+    let cls = 'time-slot';
+    if (isBooked) cls += ' booked';
+    else if (isSelected) cls += ' selected';
+    const onclick = isBooked ? '' : `onclick="selectTime('${t}')"`;
+    return `<div class="${cls}" ${onclick}>${t}</div>`;
+  }).join('');
+}
+
+function generateSlots() {
+  const slots = [];
+  const [startH, startM] = settings.workStart.split(':').map(Number);
+  const [endH, endM] = settings.workEnd.split(':').map(Number);
+  let cur = startH * 60 + startM;
+  const end = endH * 60 + endM;
+  const dur = parseInt(settings.sessionDuration) || 60;
+  while (cur + dur <= end) {
+    const h = String(Math.floor(cur/60)).padStart(2,'0');
+    const m = String(cur%60).padStart(2,'0');
+    slots.push(`${h}:${m}`);
+    cur += dur;
+  }
+  return slots;
+}
+
+function selectTime(t) {
+  selectedTime = t;
+  renderTimeSlots();
+  updateSummary();
+  document.getElementById('selected-summary').style.display = 'block';
+}
+
+function updateSummary() {
+  const name = document.getElementById('client-name').value || '(İsim girilmedi)';
+  const d = selectedDate ? formatDateTR(selectedDate) : '-';
+  document.getElementById('summary-text').innerHTML =
+    `👤 <b>${name}</b><br>📅 ${d} — ⏰ ${selectedTime}`;
+}
+
+// ═══════════════════════════════════════════════
+//  SAVE APPOINTMENT
+// ═══════════════════════════════════════════════
+function saveAppointment() {
+  const name = document.getElementById('client-name').value.trim();
+  const phone = document.getElementById('client-phone').value.trim();
+  const note = document.getElementById('client-note').value.trim();
+  const sessionType = document.querySelector('#session-type-chips .selected-chip')?.textContent || 'Bireysel';
+  if (!name) { showToast('⚠️ Lütfen danışan adı girin!'); return; }
+  if (!selectedDate || !selectedTime) { showToast('⚠️ Tarih ve saat seçin!'); return; }
+  const apt = {
+    id: Date.now(),
+    name, phone, note, sessionType,
+    date: selectedDate, time: selectedTime,
+    createdAt: new Date().toISOString(),
+  };
+  appointments.push(apt);
+  saveData();
+  showToast('✅ Randevu kaydedildi!');
+  // Reset
+  document.getElementById('client-name').value = '';
+  document.getElementById('client-phone').value = '';
+  document.getElementById('client-note').value = '';
+  selectedDate = null; selectedTime = null;
+  renderNewCal();
+  document.getElementById('time-card').style.display = 'none';
+  document.getElementById('selected-summary').style.display = 'none';
+  renderStats(); renderTodayList(); renderUpcoming();
+  // Offer WA reminder
+  if (phone) {
+    setTimeout(() => {
+      if (confirm(`WhatsApp ile randevu onayı gönderilsin mi?\n${name} — ${formatDateTR(apt.date)} ${apt.time}`)) {
+        sendWAReminder(apt);
+      }
+    }, 600);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  APPOINTMENT LIST
+// ═══════════════════════════════════════════════
+function renderList() {
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const filter = document.getElementById('filter-sel')?.value || 'all';
+  const now = new Date();
+  const todayStr = fmtDate(now.getFullYear(), now.getMonth(), now.getDate());
+  let apts = [...appointments].sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+  if (q) apts = apts.filter(a => a.name.toLowerCase().includes(q));
+  if (filter === 'today') apts = apts.filter(a => a.date === todayStr);
+  else if (filter === 'upcoming') apts = apts.filter(a => a.date > todayStr || (a.date === todayStr && a.time > fmtTime(now)));
+  else if (filter === 'past') apts = apts.filter(a => a.date < todayStr || (a.date === todayStr && a.time < fmtTime(now)));
+  const cont = document.getElementById('apt-list-container');
+  if (!apts.length) {
+    cont.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><p>Randevu bulunamadı</p></div>';
+    return;
+  }
+  cont.innerHTML = apts.map(a => {
+    const status = getStatus(a, now, todayStr);
+    const colors = ['#ffd6b0','#c5b4e3','#b5ead7','#f7a8c4','#ffe08a','#5ecdc8'];
+    const bg = colors[a.id % colors.length];
+    return `<div class="apt-item" onclick="openAptModal(${a.id})">
+      <div class="apt-avatar" style="background:${bg}">${a.name[0].toUpperCase()}</div>
+      <div class="apt-info">
+        <div class="apt-name">${a.name}</div>
+        <div class="apt-time">📅 ${formatDateTR(a.date)} — ⏰ ${a.time} &nbsp;·&nbsp; ${a.sessionType}</div>
+        ${a.phone ? `<div class="apt-time">📱 ${a.phone}</div>` : ''}
+      </div>
+      <div class="apt-status ${status.cls}">${status.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function getStatus(a, now, todayStr) {
+  const aptDt = new Date(a.date + 'T' + a.time);
+  const diff = aptDt - now;
+  if (a.date < todayStr) return { cls:'status-past', label:'Geçti' };
+  if (a.date === todayStr) return { cls:'status-soon', label:'Bugün' };
+  if (diff < 2*24*3600*1000) return { cls:'status-soon', label:'Yakın' };
+  return { cls:'status-ok', label:'Planlandı' };
+}
+
+function renderTodayList() {
+  const now = new Date();
+  const todayStr = fmtDate(now.getFullYear(), now.getMonth(), now.getDate());
+  const todays = appointments.filter(a => a.date === todayStr).sort((a,b) => a.time.localeCompare(b.time));
+  const cont = document.getElementById('today-list');
+  if (!todays.length) {
+    cont.innerHTML = '<div class="empty"><div class="empty-icon">🌸</div><p>Bugün randevu yok</p></div>';
+    return;
+  }
+  cont.innerHTML = todays.map(a => `
+    <div class="apt-item" onclick="openAptModal(${a.id})">
+      <div class="apt-avatar" style="background:var(--peach)">${a.name[0].toUpperCase()}</div>
+      <div class="apt-info">
+        <div class="apt-name">${a.name}</div>
+        <div class="apt-time">⏰ ${a.time} — ${a.sessionType}</div>
+      </div>
+      <div class="apt-status status-soon">Bugün</div>
+    </div>`).join('');
+}
+
+function renderUpcoming() {
+  const now = new Date();
+  const todayStr = fmtDate(now.getFullYear(), now.getMonth(), now.getDate());
+  const upcoming = appointments
+    .filter(a => a.date > todayStr)
+    .sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time))
+    .slice(0, 4);
+  const cont = document.getElementById('upcoming-list');
+  if (!upcoming.length) {
+    cont.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Yaklaşan randevu yok</p></div>';
+    return;
+  }
+  cont.innerHTML = upcoming.map(a => `
+    <div class="apt-item" onclick="openAptModal(${a.id})">
+      <div class="apt-avatar" style="background:var(--mint)">${a.name[0].toUpperCase()}</div>
+      <div class="apt-info">
+        <div class="apt-name">${a.name}</div>
+        <div class="apt-time">📅 ${formatDateTR(a.date)} — ⏰ ${a.time}</div>
+      </div>
+      <div class="apt-status status-ok">Planlandı</div>
+    </div>`).join('');
+}
+
+function renderStats() {
+  const now = new Date();
+  const todayStr = fmtDate(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekEnd = new Date(now); weekEnd.setDate(weekEnd.getDate() + 7);
+  const weekEndStr = fmtDate(weekEnd.getFullYear(), weekEnd.getMonth(), weekEnd.getDate());
+  document.getElementById('stat-total').textContent = appointments.length;
+  document.getElementById('stat-today').textContent = appointments.filter(a => a.date === todayStr).length;
+  document.getElementById('stat-week').textContent = appointments.filter(a => a.date >= todayStr && a.date <= weekEndStr).length;
+}
+
+// ═══════════════════════════════════════════════
+//  APPOINTMENT MODAL
+// ═══════════════════════════════════════════════
+function openAptModal(id) {
+  currentAptId = id;
+  const a = appointments.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('modal-apt-title').textContent = '👤 ' + a.name;
+  const msg = buildReminderMsg(a);
+  document.getElementById('modal-apt-content').innerHTML = `
+    <div class="info-box" style="margin-bottom:12px;">
+      📅 <b>${formatDateTR(a.date)}</b> — ⏰ <b>${a.time}</b><br>
+      🗂️ ${a.sessionType}
+      ${a.phone ? `<br>📱 ${a.phone}` : ''}
+      ${a.note ? `<br>📝 ${a.note}` : ''}
+    </div>
+    <div class="card-title" style="margin-bottom:8px;">📨 Hatırlatma Mesajı</div>
+    <textarea id="reminder-edit" style="min-height:130px;font-size:13px;">${msg}</textarea>
+    ${a.phone ? `<button class="whatsapp-btn" onclick="sendReminderFromModal()">💬 WhatsApp ile Gönder</button>` : '<div class="info-box" style="margin-top:8px;">⚠️ Telefon numarası eklenmemiş</div>'}
+  `;
+  openModal('modal-apt');
+}
+
+function sendReminderFromModal() {
+  const a = appointments.find(x => x.id === currentAptId);
+  if (!a || !a.phone) return;
+  const msg = document.getElementById('reminder-edit').value;
+  const phone = a.phone.replace(/\D/g,'');
+  const intl = phone.startsWith('0') ? '90' + phone.slice(1) : phone;
+  window.open(`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function deleteAppointment() {
+  if (!confirm('Bu randevuyu silmek istediğinize emin misiniz?')) return;
+  appointments = appointments.filter(a => a.id !== currentAptId);
+  saveData();
+  closeModal('modal-apt');
+  renderList(); renderStats(); renderTodayList(); renderUpcoming();
+  showToast('🗑️ Randevu silindi');
+}
+
+// ═══════════════════════════════════════════════
+//  LOCATION
+// ═══════════════════════════════════════════════
+function loadLocationInputs() {
+  document.getElementById('loc-name-input').value = location_data.name;
+  document.getElementById('loc-addr-input').value = location_data.address;
+  document.getElementById('loc-maps-input').value = location_data.maps;
+  document.getElementById('loc-wa-input').value = location_data.waMsg ||
+    `Merhaba! 🌿\nDenge Psikolojik Danışmanlık ofisimizin konumu:\n\n📍 ${location_data.address}\n\n${location_data.maps ? '🗺️ ' + location_data.maps : ''}`;
+  document.getElementById('loc-name-display').textContent = location_data.name;
+  document.getElementById('loc-addr-display').textContent = location_data.address;
+}
+function saveLocation() {
+  location_data.name    = document.getElementById('loc-name-input').value;
+  location_data.address = document.getElementById('loc-addr-input').value;
+  location_data.maps    = document.getElementById('loc-maps-input').value;
+  location_data.waMsg   = document.getElementById('loc-wa-input').value;
+  localStorage.setItem('denge_location', JSON.stringify(location_data));
+  document.getElementById('loc-name-display').textContent = location_data.name;
+  document.getElementById('loc-addr-display').textContent = location_data.address;
+  showToast('✅ Konum bilgileri kaydedildi!');
+}
+function shareLocationWA() {
+  const msg = document.getElementById('loc-wa-input').value ||
+    `Ofisimizin konumu:\n${location_data.address}\n${location_data.maps}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function copyAddress() {
+  const addr = location_data.address + (location_data.maps ? '\n' + location_data.maps : '');
+  navigator.clipboard.writeText(addr).then(() => showToast('📋 Adres kopyalandı!'));
+}
+function openMaps() {
+  if (location_data.maps) window.open(location_data.maps, '_blank');
+  else window.open(`https://maps.google.com/?q=${encodeURIComponent(location_data.address)}`, '_blank');
+}
+
+// ═══════════════════════════════════════════════
+//  SETTINGS
+// ═══════════════════════════════════════════════
+function openSettings() {
+  loadSettings();
+  openModal('modal-settings');
+}
+function loadSettings() {
+  document.getElementById('reminder-template').value = settings.reminderTemplate;
+  document.getElementById('session-duration').value = settings.sessionDuration;
+  renderWorkingDaysConfig();
+}
+function saveSettings() {
+  settings.reminderTemplate = document.getElementById('reminder-template').value;
+  settings.sessionDuration = parseInt(document.getElementById('session-duration').value);
+  // Working days
+  const days = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  days.forEach((_, i) => {
+    const sel = document.getElementById(`wd-${i}`);
+    if (sel) settings.workingDays[i] = sel.value !== 'off';
+    const wstart = document.getElementById(`ws-${i}`);
+    const wend   = document.getElementById(`we-${i}`);
+    if (wstart) settings.workStart = wstart.value;
+    if (wend)   settings.workEnd   = wend.value;
+  });
+  localStorage.setItem('denge_settings', JSON.stringify(settings));
+  showToast('✅ Ayarlar kaydedildi!');
+}
+function saveReminderTemplate() {
+  settings.reminderTemplate = document.getElementById('reminder-template').value;
+  localStorage.setItem('denge_settings', JSON.stringify(settings));
+  showToast('✅ Şablon kaydedildi!');
+}
+function renderWorkingDaysConfig() {
+  const days = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  const times = [];
+  for (let h = 7; h <= 21; h++) {
+    times.push(`${String(h).padStart(2,'0')}:00`);
+    times.push(`${String(h).padStart(2,'0')}:30`);
+  }
+  const timeOpts = times.map(t => `<option value="${t}">${t}</option>`).join('');
+  document.getElementById('working-days-config').innerHTML = days.map((d, i) => {
+    const isOn = settings.workingDays[i];
+    return `<div class="day-row">
+      <div class="day-name">${d}</div>
+      <select id="wd-${i}" style="flex:1;max-width:90px;">
+        <option value="on" ${isOn?'selected':''}>Açık</option>
+        <option value="off" ${!isOn?'selected':''}>Kapalı</option>
+      </select>
+      <select id="ws-${i}" style="flex:1;">
+        ${times.map(t => `<option value="${t}" ${t===settings.workStart?'selected':''}>${t}</option>`).join('')}
+      </select>
+      <select id="we-${i}" style="flex:1;">
+        ${times.map(t => `<option value="${t}" ${t===settings.workEnd?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+//  WHATSAPP REMINDER
+// ═══════════════════════════════════════════════
+function buildReminderMsg(apt) {
+  return settings.reminderTemplate
+    .replace(/{isim}/g, apt.name)
+    .replace(/{tarih}/g, formatDateTR(apt.date))
+    .replace(/{saat}/g, apt.time);
+}
+function sendWAReminder(apt) {
+  if (!apt.phone) return;
+  const msg = buildReminderMsg(apt);
+  const phone = apt.phone.replace(/\D/g,'');
+  const intl = phone.startsWith('0') ? '90' + phone.slice(1) : phone;
+  window.open(`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// ═══════════════════════════════════════════════
+//  AUTO REMINDERS (24h check)
+// ═══════════════════════════════════════════════
+function checkReminders() {
+  const now = new Date();
+  const in24 = new Date(now.getTime() + 24*3600*1000);
+  const in25 = new Date(now.getTime() + 25*3600*1000);
+  const reminded = JSON.parse(localStorage.getItem('denge_reminded') || '[]');
+  const toRemind = appointments.filter(a => {
+    const aptDt = new Date(a.date + 'T' + a.time);
+    return aptDt >= in24 && aptDt < in25 && !reminded.includes(a.id) && a.phone;
+  });
+  if (toRemind.length) {
+    const names = toRemind.map(a => a.name).join(', ');
+    showToast(`⏰ Hatırlatma: ${names} (24 saat sonra)`);
+    toRemind.forEach(a => {
+      reminded.push(a.id);
+      if (confirm(`⏰ Yarın randevusu var: ${a.name} — ${a.time}\nWhatsApp hatırlatması gönderilsin mi?`)) {
+        sendWAReminder(a);
+      }
+    });
+    localStorage.setItem('denge_reminded', JSON.stringify(reminded));
+  }
+  // Check every hour
+  setTimeout(checkReminders, 60 * 60 * 1000);
+}
+
+// ═══════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════
+function fmtDate(y, m, d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+function fmtTime(d) {
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function formatDateTR(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  const dayNames = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  const dt = new Date(dateStr);
+  return `${d} ${MONTHS_TR[parseInt(m)-1]} ${y} ${dayNames[dt.getDay()]}`;
+}
+function selectChip(el, groupId) {
+  document.querySelectorAll(`#${groupId} .chip`).forEach(c => c.classList.remove('selected-chip'));
+  el.classList.add('selected-chip');
+  updateSummary();
+}
+function saveData() {
+  localStorage.setItem('denge_apts', JSON.stringify(appointments));
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// ═══════════════════════════════════════════════
+//  START
+// ═══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
