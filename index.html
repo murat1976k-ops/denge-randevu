@@ -547,6 +547,10 @@
   </div>
 
   <button class="btn btn-yellow" onclick="showWaitlist()">⏳ Bekleme Listesi (<span id="home-waitlist-count">0</span>)</button>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+    <button class="btn btn-lavender" onclick="openModal('modal-announcement')" style="margin-top:0;">📢 Duyuru Gönder</button>
+    <button class="btn btn-pink" onclick="openModal('modal-social')" style="margin-top:0;">📱 Sosyal Medya</button>
+  </div>
 
   <div class="card" id="unconfirmed-card" style="display:none;margin-top:16px;">
     <div class="card-title">📩 Onay Bekleyenler</div>
@@ -696,6 +700,8 @@
 
     <div class="card" style="margin-bottom:12px;">
       <div class="card-title">⭐ Değerlendirme Linkleri</div>
+      <label>Terapist WhatsApp Numarası (SCL-90 sonuçları için)</label>
+      <input type="tel" id="my-phone" placeholder="05XX XXX XX XX">
       <label>Google Yorum Linki</label>
       <input type="url" id="review-google" placeholder="https://g.page/r/...">
       <label>DoktorTakvimi Linki</label>
@@ -714,6 +720,11 @@
       <label>İkon (emoji)</label>
       <input type="text" id="brand-icon" placeholder="Örn: 🧠" maxlength="4" style="font-size:24px;text-align:center;">
       <button class="btn btn-teal" onclick="saveBranding()">💾 Kaydet</button>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">🗓️ Çalışma Günleri & Saatleri</div>
+      <div id="working-days-config"></div>
     </div>
 
     <div class="card" style="margin-bottom:12px;">
@@ -928,7 +939,115 @@
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-client-title">Danışan Profili</div>
     <div id="modal-client-content"></div>
-    <button class="btn btn-outline" onclick="closeModal('modal-client')" style="margin-top:16px;">Kapat</button>
+    <button class="btn btn-lavender" onclick="openClientEdit()" style="margin-top:12px;">✏️ Profili Düzenle</button>
+    <button class="btn btn-teal" onclick="sendSCL90Link()" style="margin-top:8px;">📋 SCL-90 Testi Gönder</button>
+    <button class="btn btn-outline" onclick="closeModal('modal-client')" style="margin-top:8px;">Kapat</button>
+  </div>
+</div>
+
+<!-- CLIENT EDIT MODAL -->
+<div class="modal-overlay" id="modal-client-edit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✏️ Klinik Profil</div>
+    <label>Başvuru Nedeni</label>
+    <div class="chips" id="reason-chips" style="margin-bottom:8px;">
+      <div class="chip teal" onclick="toggleChipMulti(this)">😔 Depresyon</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">😰 Kaygı</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">💑 İlişki Sorunu</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">😡 Öfke Kontrolü</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">😴 Uyku Sorunu</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">🎓 Kariyer/Okul</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">👨‍👩‍👧 Aile Sorunu</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">😢 Yas/Kayıp</div>
+      <div class="chip teal" onclick="toggleChipMulti(this)">🧠 Travma</div>
+    </div>
+    <label>Terapi Hedefi</label>
+    <textarea id="edit-goal" placeholder="Bu danışanla ne üzerinde çalışıyoruz?" style="min-height:60px;"></textarea>
+    <label>Planlanan Seans Sayısı</label>
+    <input type="number" id="edit-planned-sessions" placeholder="Örn: 10">
+    <label>Kullandığı İlaçlar</label>
+    <input type="text" id="edit-medication" placeholder="Varsa ilaç adı, yoksa boş bırakın">
+    <label>Daha Önce Terapi</label>
+    <div class="chips" id="prev-therapy-chips" style="margin-bottom:8px;">
+      <div class="chip teal" onclick="selectChip(this,'prev-therapy-chips')">Evet</div>
+      <div class="chip teal selected-chip" onclick="selectChip(this,'prev-therapy-chips')">Hayır</div>
+    </div>
+    <label>Acil İletişim</label>
+    <input type="text" id="edit-emergency" placeholder="Ad Soyad — Telefon">
+    <label>Terapist Notları (Gizli)</label>
+    <textarea id="edit-therapist-note" placeholder="Klinik gözlemler..." style="min-height:60px;"></textarea>
+    <label>Süreç Durumu</label>
+    <div class="chips" id="progress-chips" style="margin-bottom:8px;">
+      <div class="chip teal selected-chip" onclick="selectChip(this,'progress-chips')">🔄 Devam Ediyor</div>
+      <div class="chip teal" onclick="selectChip(this,'progress-chips')">✅ Tamamlandı</div>
+      <div class="chip teal" onclick="selectChip(this,'progress-chips')">⏸️ Beklemede</div>
+      <div class="chip teal" onclick="selectChip(this,'progress-chips')">❌ Sonlandırıldı</div>
+    </div>
+    <button class="btn btn-teal" onclick="saveClientProfile()">💾 Kaydet</button>
+    <button class="btn btn-outline" onclick="closeModal('modal-client-edit')" style="margin-top:8px;">İptal</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ ANNOUNCEMENT MODAL ═══════════════════ -->
+<div class="modal-overlay" id="modal-announcement">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📢 Toplu Duyuru</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Tüm danışanlarınıza veya seçtiklerinize WhatsApp mesajı gönderin.</p>
+    <label>Duyuru Şablonu</label>
+    <div class="chips" id="announcement-template-chips" style="margin-bottom:8px;">
+      <div class="chip teal" onclick="setAnnouncementTemplate('tatil')">🏖️ Tatil Bildirimi</div>
+      <div class="chip teal" onclick="setAnnouncementTemplate('yeniSaat')">🕐 Yeni Saatler</div>
+      <div class="chip teal" onclick="setAnnouncementTemplate('ucret')">💰 Ücret Güncelleme</div>
+      <div class="chip teal" onclick="setAnnouncementTemplate('grup')">👥 Grup Terapi</div>
+      <div class="chip teal" onclick="setAnnouncementTemplate('tatil_bitis')">🎉 Tatil Bitiş</div>
+    </div>
+    <label>Mesaj</label>
+    <textarea id="announcement-text" style="min-height:120px;" placeholder="Duyuru mesajınızı yazın..."></textarea>
+    <label>Gönderilecek Danışanlar</label>
+    <div class="chips" id="announcement-target-chips">
+      <div class="chip teal selected-chip" onclick="selectChip(this,'announcement-target-chips')">Tümü</div>
+      <div class="chip teal" onclick="selectChip(this,'announcement-target-chips')">Aktif</div>
+      <div class="chip teal" onclick="selectChip(this,'announcement-target-chips')">Bu Ayki</div>
+    </div>
+    <div id="announcement-count" style="font-size:13px;color:var(--teal2);margin-top:8px;font-weight:700;"></div>
+    <button class="btn btn-teal" onclick="sendAnnouncement()" style="margin-top:12px;">📤 Göndermeye Başla</button>
+    <button class="btn btn-outline" onclick="closeModal('modal-announcement')" style="margin-top:8px;">Kapat</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ SOCIAL MEDIA MODAL ═══════════════════ -->
+<div class="modal-overlay" id="modal-social">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📱 Sosyal Medya Asistanı</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">AI ile Instagram ve LinkedIn içeriği oluşturun.</p>
+    <label>İçerik Türü</label>
+    <div class="chips" id="social-type-chips" style="margin-bottom:8px;">
+      <div class="chip teal selected-chip" onclick="selectChip(this,'social-type-chips')">📸 Instagram Post</div>
+      <div class="chip teal" onclick="selectChip(this,'social-type-chips')">💼 LinkedIn</div>
+      <div class="chip teal" onclick="selectChip(this,'social-type-chips')">📖 Hikaye/Story</div>
+    </div>
+    <label>Konu</label>
+    <div class="chips" id="social-topic-chips" style="margin-bottom:8px;">
+      <div class="chip pink" onclick="toggleChipMulti(this)">😰 Kaygı</div>
+      <div class="chip pink" onclick="toggleChipMulti(this)">😔 Depresyon</div>
+      <div class="chip pink" onclick="toggleChipMulti(this)">💑 İlişkiler</div>
+      <div class="chip pink" onclick="toggleChipMulti(this)">🧘 Farkındalık</div>
+      <div class="chip pink" onclick="toggleChipMulti(this)">💪 Öz Bakım</div>
+      <div class="chip pink" onclick="toggleChipMulti(this)">👨‍👩‍👧 Ebeveynlik</div>
+      <div class="chip pink" onclick="toggleChipMulti(this)">🏢 Müsait Saatler</div>
+    </div>
+    <label>Ek not (opsiyonel)</label>
+    <input type="text" id="social-extra" placeholder="Eklemek istediğiniz bir şey var mı?">
+    <button class="btn btn-pink" onclick="generateSocialContent()" style="margin-top:12px;">✨ İçerik Oluştur</button>
+    <div id="social-result" style="display:none;margin-top:14px;">
+      <div class="card-title" style="margin-bottom:8px;">📝 Oluşturulan İçerik</div>
+      <textarea id="social-content-text" style="min-height:160px;font-size:13px;"></textarea>
+      <button class="btn btn-teal" onclick="copySocialContent()">📋 Kopyala</button>
+    </div>
+    <button class="btn btn-outline" onclick="closeModal('modal-social')" style="margin-top:8px;">Kapat</button>
   </div>
 </div>
 
@@ -1000,20 +1119,23 @@ let reviewSettings = JSON.parse(localStorage.getItem('denge_review') || 'null') 
 };
 
 function saveReviewSettings() {
-  reviewSettings.google  = document.getElementById('review-google')?.value || '';
-  reviewSettings.doktor  = document.getElementById('review-doktor')?.value || '';
-  reviewSettings.message = document.getElementById('review-message')?.value || '';
+  reviewSettings.google   = document.getElementById('review-google')?.value || '';
+  reviewSettings.doktor   = document.getElementById('review-doktor')?.value || '';
+  reviewSettings.message  = document.getElementById('review-message')?.value || '';
+  reviewSettings.myPhone  = document.getElementById('my-phone')?.value || '';
   localStorage.setItem('denge_review', JSON.stringify(reviewSettings));
-  showToast('✅ Değerlendirme linkleri kaydedildi!');
+  showToast('✅ Ayarlar kaydedildi!');
 }
 
 function loadReviewSettings() {
   const g = document.getElementById('review-google');
   const d = document.getElementById('review-doktor');
   const m = document.getElementById('review-message');
+  const p = document.getElementById('my-phone');
   if (g) g.value = reviewSettings.google;
   if (d) d.value = reviewSettings.doktor;
   if (m) m.value = reviewSettings.message;
+  if (p) p.value = reviewSettings.myPhone || '';
 }
 
 function sendReviewRequest(aptId) {
@@ -2307,6 +2429,7 @@ function renderClients() {
 
 function openClientModal(encodedKey) {
   const key = decodeURIComponent(encodedKey);
+  currentClientKey = key;
   const clients = getClients();
   const c = clients.find(x => (x.phone || x.name) === key);
   if (!c) return;
@@ -2328,20 +2451,308 @@ function openClientModal(encodedKey) {
     </div>`;
   }).join('');
 
+  // Get clinical profile
+  const profile = clientProfiles[currentClientKey] || {};
+  var profileRows = '';
+  if (profile.reasons && profile.reasons.length) profileRows += '<div style="font-size:12px;margin-bottom:4px;">📋 <b>Başvuru:</b> ' + profile.reasons.join(', ') + '</div>';
+  if (profile.goal) profileRows += '<div style="font-size:12px;margin-bottom:4px;">🎯 <b>Hedef:</b> ' + profile.goal + '</div>';
+  if (profile.progress) profileRows += '<div style="font-size:12px;margin-bottom:4px;">📊 <b>Durum:</b> ' + profile.progress + '</div>';
+  if (profile.plannedSessions) profileRows += '<div style="font-size:12px;margin-bottom:4px;">🔢 <b>Planlanan:</b> ' + profile.plannedSessions + ' seans</div>';
+  if (profile.medication) profileRows += '<div style="font-size:12px;margin-bottom:4px;">💊 <b>İlaç:</b> ' + profile.medication + '</div>';
+  if (profile.prevTherapy) profileRows += '<div style="font-size:12px;margin-bottom:4px;">🔄 <b>Önceki Terapi:</b> ' + profile.prevTherapy + '</div>';
+  if (profile.emergency) profileRows += '<div style="font-size:12px;margin-bottom:4px;">🆘 <b>Acil:</b> ' + profile.emergency + '</div>';
+  if (profile.therapistNote) profileRows += '<div style="font-size:12px;margin-bottom:4px;">📝 <b>Not:</b> ' + profile.therapistNote + '</div>';
+  var profileHtml = profileRows
+    ? '<div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:12px;border:1.5px solid var(--border);"><div style="font-family:var(--font2);font-weight:800;font-size:13px;margin-bottom:8px;">🧠 Klinik Profil</div>' + profileRows + '</div>'
+    : '<div class="info-box" style="margin-bottom:10px;">ℹ️ Klinik profil henüz doldurulmadı. Profili Düzenle butonunu kullanın.</div>';
+
   document.getElementById('modal-client-content').innerHTML = `
-    <div class="info-box" style="margin-bottom:14px;">
+    <div class="info-box" style="margin-bottom:12px;">
       👤 <b>${c.name}</b>
       ${c.phone ? `<br>📱 ${c.phone}` : ''}
       <br>📅 İlk seans: ${formatDateTR(c.firstDate).split(' ').slice(0,3).join(' ')}
       <br>🔢 Toplam seans: <b>${c.appointments.length}</b>
       ${c.totalFee ? `<br>💰 Toplam: ₺${c.totalFee.toLocaleString('tr-TR')} · ✅ ₺${c.paidFee.toLocaleString('tr-TR')} · ❌ ₺${(c.totalFee-c.paidFee).toLocaleString('tr-TR')}` : ''}
     </div>
+    ${profileHtml}
     <div class="card-title" style="margin-bottom:10px;">📋 Seans Geçmişi</div>
     ${aptsHtml}
     ${c.phone ? `<button class="whatsapp-btn" onclick="closeModal('modal-client');shareLocationWA()" style="margin-top:12px;">💬 WhatsApp Mesaj Gönder</button>` : ''}
   `;
 
   openModal('modal-client');
+}
+
+// ═══════════════════════════════════════════════
+//  CLIENT PROFILE MANAGEMENT
+// ═══════════════════════════════════════════════
+
+let clientProfiles = JSON.parse(localStorage.getItem('denge_client_profiles') || '{}');
+let currentClientKey = null;
+
+function saveClientProfiles() {
+  localStorage.setItem('denge_client_profiles', JSON.stringify(clientProfiles));
+}
+
+function toggleChipMulti(el) {
+  el.classList.toggle('selected-chip');
+}
+
+function openClientEdit() {
+  const clients = getClients();
+  const c = clients.find(x => (x.phone || x.name) === currentClientKey);
+  if (!c) return;
+  const profile = clientProfiles[currentClientKey] || {};
+  
+  // Set reasons
+  const reasons = profile.reasons || [];
+  document.querySelectorAll('#reason-chips .chip').forEach(ch => {
+    const txt = ch.textContent.trim();
+    if (reasons.some(r => ch.textContent.includes(r.replace(/[^\w\s]/g,'').trim()))) {
+      ch.classList.add('selected-chip');
+    } else {
+      ch.classList.remove('selected-chip');
+    }
+  });
+
+  const el = (id, val) => { const e = document.getElementById(id); if(e) e.value = val || ''; };
+  el('edit-goal', profile.goal);
+  el('edit-planned-sessions', profile.plannedSessions);
+  el('edit-medication', profile.medication);
+  el('edit-emergency', profile.emergency);
+  el('edit-therapist-note', profile.therapistNote);
+
+  // Set prev therapy
+  const prevTherapy = profile.prevTherapy || 'Hayır';
+  document.querySelectorAll('#prev-therapy-chips .chip').forEach(ch => {
+    ch.classList.toggle('selected-chip', ch.textContent.trim() === prevTherapy);
+  });
+
+  // Set progress
+  const progress = profile.progress || '🔄 Devam Ediyor';
+  document.querySelectorAll('#progress-chips .chip').forEach(ch => {
+    ch.classList.toggle('selected-chip', ch.textContent.trim() === progress);
+  });
+
+  closeModal('modal-client');
+  openModal('modal-client-edit');
+}
+
+function saveClientProfile() {
+  if (!currentClientKey) return;
+  const reasons = [...document.querySelectorAll('#reason-chips .selected-chip')].map(c => c.textContent.trim());
+  const prevTherapy = document.querySelector('#prev-therapy-chips .selected-chip')?.textContent.trim() || 'Hayır';
+  const progress = document.querySelector('#progress-chips .selected-chip')?.textContent.trim() || '🔄 Devam Ediyor';
+
+  clientProfiles[currentClientKey] = {
+    reasons,
+    goal: document.getElementById('edit-goal')?.value || '',
+    plannedSessions: document.getElementById('edit-planned-sessions')?.value || '',
+    medication: document.getElementById('edit-medication')?.value || '',
+    prevTherapy,
+    emergency: document.getElementById('edit-emergency')?.value || '',
+    therapistNote: document.getElementById('edit-therapist-note')?.value || '',
+    progress,
+    updatedAt: new Date().toLocaleDateString('tr-TR')
+  };
+  saveClientProfiles();
+  closeModal('modal-client-edit');
+  showToast('✅ Klinik profil kaydedildi!');
+}
+
+// ═══════════════════════════════════════════════
+//  ANNOUNCEMENT SYSTEM
+// ═══════════════════════════════════════════════
+
+const announcementTemplates = {
+  tatil: getTatilTemplate,
+  yeniSaat: getYeniSaatTemplate,
+  ucret: getUcretTemplate,
+  grup: getGrupTemplate,
+  tatil_bitis: getTatilBitisTemplate
+};
+function getTatilTemplate() { return ["Sayin danisanimiz,","","🏖️ {tarih_aralik} tarihleri arasinda ofisimiz tatil nedeniyle kapali olacaktir.","","Bu tarihler arasindaki randevulariniz icin sizinle iletisime gececegiz.","","Anlayisiniz icin tesekkur ederiz. 🙏","","Denge Psikolojik Danismanlik"].join("\n"); }
+function getYeniSaatTemplate() { return ["Sayin danisanimiz,","","🕐 Calisma saatlerimiz guncellenmistir:","","Pazartesi-Cuma: 09:00 - 18:00","Cumartesi: 10:00 - 14:00","","Yeni randevu talepleriniz icin bizimle iletisime gecebilirsiniz.","","Denge Psikolojik Danismanlik"].join("\n"); }
+function getUcretTemplate() { return ["Sayin danisanimiz,","","💰 Seans ucretlerimiz hakkinda bilgilendirme yapmak istedik.","","Guncelleme icin bizimle iletisime gecebilirsiniz.","","Tesekkurler 🙏","Denge Psikolojik Danismanlik"].join("\n"); }
+function getGrupTemplate() { return ["Sayin danisanimiz,","","👥 YENİ GRUP TERAPİ PROGRAMI","","Ofisimizde yeni bir grup terapi programi baslatiyoruz.","","Katilim yerleri sinirlidir.","","Denge Psikolojik Danismanlik"].join("\n"); }
+function getTatilBitisTemplate() { return ["Sayin danisanimiz,","","🎉 Tatilimiz sona erdi!","","Ofisimiz tekrar hizmetinizde. Randevu almak icin mesaj atabilirsiniz.","","Hos geldiniz! 🌿","Denge Psikolojik Danismanlik"].join("\n"); }
+
+function setAnnouncementTemplate(key) {
+  const el = document.getElementById('announcement-text');
+  const tmpl = announcementTemplates[key];
+  if (el) el.value = (typeof tmpl === 'function' ? tmpl() : tmpl) || '';
+  updateAnnouncementCount();
+}
+
+function updateAnnouncementCount() {
+  const target = document.querySelector('#announcement-target-chips .selected-chip')?.textContent || 'Tümü';
+  const clients = getClientsForAnnouncement(target);
+  const el = document.getElementById('announcement-count');
+  if (el) el.textContent = `📤 ${clients.length} danışana gönderilecek`;
+}
+
+function getClientsForAnnouncement(target) {
+  const now = new Date();
+  const todayStr = fmtDate(now.getFullYear(), now.getMonth(), now.getDate());
+  const monthStr = todayStr.slice(0,7);
+  const clientMap = {};
+  appointments.forEach(a => {
+    if (!a.phone) return;
+    const key = a.phone;
+    if (!clientMap[key]) clientMap[key] = a;
+    if (target === 'Aktif') {
+      const profile = clientProfiles[a.phone || a.name];
+      if (profile?.progress && profile.progress !== '🔄 Devam Ediyor') delete clientMap[key];
+    }
+    if (target === 'Bu Ayki') {
+      if (!a.date.startsWith(monthStr)) delete clientMap[key];
+    }
+  });
+  return Object.values(clientMap);
+}
+
+let announcementQueue = [];
+let announcementIndex = 0;
+
+function sendAnnouncement() {
+  const msg = document.getElementById('announcement-text')?.value.trim();
+  if (!msg) { showToast('⚠️ Mesaj boş olamaz!'); return; }
+  const target = document.querySelector('#announcement-target-chips .selected-chip')?.textContent || 'Tümü';
+  const clients = getClientsForAnnouncement(target);
+  if (!clients.length) { showToast('⚠️ Telefon numarası olan danışan yok!'); return; }
+  
+  announcementQueue = clients;
+  announcementIndex = 0;
+  closeModal('modal-announcement');
+  sendNextAnnouncement(msg);
+}
+
+function sendNextAnnouncement(msg) {
+  if (announcementIndex >= announcementQueue.length) {
+    showToast('✅ Tüm mesajlar gönderildi!');
+    return;
+  }
+  const client = announcementQueue[announcementIndex];
+  const phone = client.phone.replace(/[^0-9]/g,'');
+  const intl = phone.startsWith('0') ? '90' + phone.slice(1) : phone;
+  window.open(`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`, '_blank');
+  announcementIndex++;
+  if (announcementIndex < announcementQueue.length) {
+    showToast(`📤 ${announcementIndex}/${announcementQueue.length} gönderildi — sonraki için bekleyin`);
+    setTimeout(() => sendNextAnnouncement(msg), 2500);
+  } else {
+    setTimeout(() => showToast('✅ Tüm duyurular gönderildi!'), 1000);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  SOCIAL MEDIA ASSISTANT
+// ═══════════════════════════════════════════════
+
+async function generateSocialContent() {
+  const type = document.querySelector('#social-type-chips .selected-chip')?.textContent.trim() || 'Instagram Post';
+  const topics = [...document.querySelectorAll('#social-topic-chips .selected-chip')].map(c => c.textContent.trim()).join(', ');
+  const extra = document.getElementById('social-extra')?.value || '';
+  const brandName = branding.name + ' ' + branding.sub;
+
+  if (!topics) { showToast('⚠️ En az bir konu seçin!'); return; }
+
+  const resultDiv = document.getElementById('social-result');
+  const textArea = document.getElementById('social-content-text');
+  if (resultDiv) resultDiv.style.display = 'block';
+  if (textArea) textArea.value = '✨ İçerik oluşturuluyor...';
+
+  try {
+    const prompt = `Sen bir psikolojik danışmanlık ofisi için sosyal medya içeriği yazıyorsun.
+
+Ofis adı: ${brandName}
+Platform: ${type}
+Konu(lar): ${topics}
+${extra ? 'Ek not: ' + extra : ''}
+
+Lütfen aşağıdaki kurallara uy:
+- Türkçe yaz
+- Profesyonel ama sıcak bir dil kullan
+- Damgalama (stigma) içermeyen, umut verici bir ton
+- ${type.includes('Instagram') ? 'Emoji kullan, hashtagler ekle (#psikoloji #terapi #psikolojikdanışmanlık vb.)' : 'Profesyonel LinkedIn tonu, minimal emoji'}
+- Seans veya randevu için CTA ekle
+- Maksimum 150-200 kelime`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text || 'İçerik oluşturulamadı.';
+    if (textArea) textArea.value = text;
+  } catch (err) {
+    if (textArea) textArea.value = generateOfflineSocialContent(type, topics, brandName, extra);
+  }
+}
+
+function generateOfflineSocialContent(type, topics, brand, extra) {
+  const isIG = type.includes('Instagram');
+  const topicList = topics.split(',').map(function(t) { return t.trim(); });
+  const mainTopic = topicList[0] || '';
+  const hashtags = '#psikoloji #terapi #danismanlik #ruhsagligi #bursa #nilufer';
+
+  const templates = {
+    'Kaygı': 'Kaygı hissетtiğinizde yalnız değilsiniz. 🌿\n\nProfesyonel destek ile bu duyguları yönetmeyi öğrenebilirsiniz.\n\nRandevu için DM. 💙\n\n' + brand,
+    'Depresyon': 'Kendinizi ağır hissediyorsanız, bu geçici olabilir. 🌱\n\nDepresyon tedavi edilebilir. İlk adımı atmak için buradayız.\n\n' + brand,
+    'İlişkiler': 'Sağlıklı ilişkiler, sağlıklı bir hayatın temelidir. 💑\n\nÇift veya bireysel terapi desteği alabilirsiniz.\n\n' + brand,
+    'Farkındalık': 'Şu an burada olun. 🧘\n\nFarkındalık pratikleri zihinsel sağlığınızı güçlendirir.\n\n' + brand,
+    'Öz Bakım': 'Kendinize zaman ayırmak bencillik değil, zorunluluktur. 💪\n\nÖz bakım en iyi yatırımdır.\n\n' + brand,
+    'Müsait Saatler': 'Bu hafta randevu saatlerimiz müsait! 📅\n\nPazartesi-Cuma 09:00-18:00. Mesaj atın.\n\n' + brand
+  };
+
+  var text = brand + '\n\nPsikolojik destek almak, güçlü olmaktır. 💙';
+  for (var key in templates) {
+    if (mainTopic.indexOf(key) !== -1) { text = templates[key]; break; }
+  }
+
+  if (isIG) { text += '\n\n' + hashtags; }
+  return text;
+}
+
+function copySocialContent() {
+  const text = document.getElementById('social-content-text')?.value;
+  if (text) {
+    navigator.clipboard.writeText(text).then(() => showToast('📋 İçerik kopyalandı!'));
+  }
+}
+
+        
+
+// SCL-90 link sender
+function sendSCL90Link() {
+  const clients = getClients();
+  const c = clients.find(x => (x.phone || x.name) === currentClientKey || x.name === currentClientKey || x.phone === currentClientKey);
+  if (!c) { showToast('⚠️ Danışan bulunamadı!'); return; }
+  if (!c.phone) { showToast('⚠️ Telefon numarası gerekli!'); return; }
+  const myPhone = reviewSettings?.myPhone || '';
+  const link = 'https://murat1976k-ops.github.io/denge-randevu/scl90.html'
+    + '?id=' + encodeURIComponent(c.phone || c.name)
+    + '&name=' + encodeURIComponent(c.name)
+    + (myPhone ? '&therapist=' + encodeURIComponent(myPhone) : '');
+  const msg = `Sayın ${c.name},
+
+Aşağıdaki linke tıklayarak SCL-90 değerlendirme testini doldurabilirsiniz. Test yaklaşık 10-15 dakika sürmektedir.
+
+📋 ${link}
+
+Sonuçlar tarafımıza otomatik iletilecektir.
+
+Teşekkürler,
+Denge Psikolojik Danışmanlık`;
+  const phone = c.phone.replace(/[^0-9]/g,'');
+  const intl = phone.startsWith('0') ? '90' + phone.slice(1) : phone;
+  window.open(`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`, '_blank');
+  showToast('📋 SCL-90 linki gönderildi!');
 }
 
 // ═══════════════════════════════════════════════
