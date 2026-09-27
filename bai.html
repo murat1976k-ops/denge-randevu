@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Beck Anksiyete Envanteri</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#5ecdc8;--teal2:#3bb8b2;--pink:#f7a8c4;--pink2:#f07fb0;--lavender:#c5b4e3;--mint:#b5ead7;--yellow:#ffe08a;--coral:#ff8c7a;--bg:#f4f9fb;--text:#2d4a52;--muted:#8aa5ad;--border:#d8edf0;--font:'Quicksand',sans-serif;--font2:'Nunito',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;padding:0 0 60px}
+.header{background:linear-gradient(135deg,#f07fb0,#c5b4e3);padding:28px 20px 20px;text-align:center;color:white}
+.header h1{font-family:var(--font2);font-size:22px;font-weight:900;margin-bottom:4px}
+.header p{font-size:13px;opacity:0.9}
+.section{background:white;margin:14px;border-radius:18px;padding:18px;box-shadow:0 4px 20px rgba(0,0,0,0.07);border:1.5px solid var(--border)}
+.section-title{font-family:var(--font2);font-weight:800;font-size:15px;margin-bottom:12px;color:var(--pink2)}
+.progress-bar{background:var(--border);border-radius:20px;height:8px;margin:0 14px 14px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--pink2),var(--lavender));border-radius:20px;transition:width .3s}
+.question-num{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}
+.question-text{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;line-height:1.5}
+.options-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.option{padding:12px 8px;border:2px solid var(--border);border-radius:12px;cursor:pointer;font-size:12px;font-weight:700;transition:all .15s;background:var(--bg);text-align:center}
+.option:active{transform:scale(0.97)}
+.option.selected{background:linear-gradient(135deg,var(--pink2),var(--pink));color:white;border-color:var(--pink2)}
+.option-label{font-size:10px;color:var(--muted);margin-top:3px}
+.option.selected .option-label{color:rgba(255,255,255,0.8)}
+.nav-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px}
+.btn{padding:14px;border:none;border-radius:14px;cursor:pointer;font-family:var(--font2);font-weight:800;font-size:15px;transition:all .18s;width:100%}
+.btn-pink{background:linear-gradient(135deg,var(--pink2),var(--pink));color:white;box-shadow:0 4px 14px rgba(247,168,196,0.5)}
+.btn-outline{background:none;border:2px solid var(--pink2);color:var(--pink2)}
+.hidden{display:none}
+.result-card{background:var(--bg);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border)}
+.result-title{font-family:var(--font2);font-weight:800;font-size:14px;margin-bottom:8px}
+.score-bar{display:flex;align-items:center;gap:10px}
+.score-track{flex:1;background:var(--border);border-radius:20px;height:22px;overflow:hidden}
+.score-fill{height:100%;border-radius:20px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:white;min-width:30px;transition:width .5s}
+.score-val{font-family:var(--font2);font-weight:800;font-size:16px;width:36px;text-align:right}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.sev-normal{background:#e8f8f0;color:#2a7a5a}
+.sev-mild{background:#fff8e0;color:#7a5a00}
+.sev-moderate{background:#fff0e0;color:#7a3a00}
+.sev-severe{background:#ffe0e0;color:#7a0000}
+.wa-btn{background:linear-gradient(135deg,#25d366,#128c7e);color:white;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;width:100%;border:none;cursor:pointer;font-family:var(--font2);font-weight:800;font-size:15px;margin-top:10px;box-shadow:0 4px 14px rgba(37,211,102,0.4)}
+label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:5px;margin-top:10px}
+input{width:100%;padding:11px 13px;border:2px solid var(--border);border-radius:12px;font-family:var(--font);font-size:16px;color:var(--text);background:var(--bg);outline:none;-webkit-appearance:none}
+input:focus{border-color:var(--pink2);background:white}
+textarea{width:100%;padding:11px;border:2px solid var(--border);border-radius:12px;font-family:var(--font);font-size:13px;min-height:140px;resize:vertical;outline:none;-webkit-appearance:none}
+textarea:focus{border-color:var(--pink2);background:white}
+.info-box{background:rgba(247,168,196,0.1);border:1.5px solid var(--pink);border-radius:12px;padding:12px;font-size:13px;color:var(--pink2);font-weight:600;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>💭 Beck Anksiyete Envanteri</h1>
+  <p id="client-greeting">Lütfen her soruyu dikkatle okuyun</p>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+<!-- INTRO -->
+<div id="intro-section">
+  <div class="section">
+    <div class="section-title">📋 Test Hakkında</div>
+    <p style="font-size:13px;line-height:1.7;color:var(--muted);">Bu test <b>son bir hafta</b> içinde yaşadığınız anksiyete belirtilerini ölçmektedir. <b>21 madde</b> içermekte ve yaklaşık <b>5-10 dakika</b> sürmektedir.</p>
+    <p style="font-size:13px;line-height:1.7;color:var(--muted);margin-top:8px;">Her belirti için sizi ne ölçüde rahatsız ettiğini belirtin:</p>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px;">
+      <div style="background:var(--bg);border-radius:10px;padding:10px;border:1.5px solid var(--border);text-align:center;font-size:12px;font-weight:700;">0<br><span style="color:var(--muted);font-weight:600;">Hiç</span></div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;border:1.5px solid var(--border);text-align:center;font-size:12px;font-weight:700;">1<br><span style="color:var(--muted);font-weight:600;">Hafif</span></div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;border:1.5px solid var(--border);text-align:center;font-size:12px;font-weight:700;">2<br><span style="color:var(--muted);font-weight:600;">Orta</span></div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;border:1.5px solid var(--border);text-align:center;font-size:12px;font-weight:700;">3<br><span style="color:var(--muted);font-weight:600;">Şiddetli</span></div>
+    </div>
+    <div style="background:rgba(255,224,138,0.2);border:1.5px solid var(--yellow);border-radius:12px;padding:12px;margin-top:12px;font-size:13px;color:#7a5a00;font-weight:600;">⚠️ Bu test klinik tanı koymaz. Sonuçlar yalnızca danışman tarafından değerlendirilir.</div>
+    <button class="btn btn-pink" onclick="startTest()" style="margin-top:16px;">▶️ Teste Başla</button>
+  </div>
+</div>
+
+<!-- TEST -->
+<div id="test-section" class="hidden">
+  <div class="section">
+    <div class="question-num" id="q-num">Madde 1 / 21</div>
+    <div class="question-text" id="q-text"></div>
+    <div class="options-grid" id="q-options"></div>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-outline" id="prev-btn" onclick="prevQ()">‹ Önceki</button>
+    <button class="btn btn-pink" id="next-btn" onclick="nextQ()">Sonraki ›</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-section" class="hidden">
+  <div class="section">
+    <div class="section-title">📊 Sonuçlarınız</div>
+    <div class="info-box" id="result-summary"></div>
+    <div id="result-detail"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">💬 Sonucu Terapistinize Gönderin</div>
+    <label>Gönderen Numara (Sizin Numaranız)</label>
+    <input type="tel" id="sender-phone" placeholder="05XX XXX XX XX">
+    <label>Terapist WhatsApp Numarası</label>
+    <input type="tel" id="result-phone" placeholder="05XX XXX XX XX">
+    <label>Gönderilecek Mesaj</label>
+    <textarea id="wa-message-edit"></textarea>
+    <button class="wa-btn" onclick="sendResultsWA()">💬 WhatsApp ile Gönder</button>
+  </div>
+  <div style="margin:14px;">
+    <button class="btn btn-outline" onclick="window.close()">✅ Tamamla</button>
+  </div>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+var clientName = 'Danisan';
+var clientPhone = '';
+var therapistPhone = '';
+try { clientName = decodeURIComponent(urlParams.get('name') || 'Danisan'); } catch(e) { clientName = urlParams.get('name') || 'Danisan'; }
+try { clientPhone = decodeURIComponent(urlParams.get('phone') || ''); } catch(e) { clientPhone = urlParams.get('phone') || ''; }
+try { therapistPhone = decodeURIComponent(urlParams.get('therapist') || ''); } catch(e) { therapistPhone = urlParams.get('therapist') || ''; }
+
+window.onload = function() {
+  var greet = document.getElementById('client-greeting');
+  if (greet) greet.textContent = 'Sayin ' + clientName + ', lutfen her maddeyi dikkatle okuyun';
+  var rp = document.getElementById('result-phone');
+  if (rp) rp.value = therapistPhone || '';
+  var sp = document.getElementById('sender-phone');
+  if (sp) sp.value = clientPhone || '';
+};
+
+const questions = [
+  'Uyusma, karincalanma',
+  'Sicaklik hissi',
+  'Bacaklarda titreme',
+  'Gevseleyememe',
+  'Cok kotu seyler olacak korkusu',
+  'Bas donmesi ya da sersemlik',
+  'Kalp carpintisi',
+  'Dengesizlik hissi',
+  'Dehset hissi',
+  'Sinirlilik',
+  'Bogulma hissi',
+  'Ellerde titreme',
+  'Titreklik',
+  'Kontrolu kaybetme korkusu',
+  'Nefes almada gucluk',
+  'Olum korkusu',
+  'Korku',
+  'Mide bulantisi',
+  'Bayilacak gibi hissetme',
+  'Yuz kizarmasi',
+  'Terleme (sicakliktan degil)'
+];
+
+var answers = new Array(21).fill(-1);
+var currentQ = 0;
+const optLabels = ['Hic', 'Hafif', 'Orta', 'Siddetli'];
+
+function startTest() {
+  document.getElementById('intro-section').classList.add('hidden');
+  document.getElementById('test-section').classList.remove('hidden');
+  renderQ();
+}
+
+function renderQ() {
+  document.getElementById('q-num').textContent = 'Madde ' + (currentQ+1) + ' / ' + questions.length;
+  document.getElementById('q-text').textContent = questions[currentQ];
+  var html = '';
+  for (var i = 0; i < 4; i++) {
+    html += '<div class="option' + (answers[currentQ] === i ? ' selected' : '') + '" onclick="selectAnswer(' + i + ')">' +
+      '<div style="font-size:20px;font-weight:900;">' + i + '</div>' +
+      '<div class="option-label">' + optLabels[i] + '</div></div>';
+  }
+  document.getElementById('q-options').innerHTML = html;
+  document.getElementById('prev-btn').style.opacity = currentQ === 0 ? '0.3' : '1';
+  document.getElementById('next-btn').textContent = currentQ === questions.length-1 ? '✅ Tamamla' : 'Sonraki ›';
+  var pct = Math.round((currentQ / questions.length) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  window.scrollTo(0, 0);
+}
+
+function selectAnswer(i) {
+  answers[currentQ] = i;
+  renderQ();
+}
+
+function prevQ() {
+  if (currentQ > 0) { currentQ--; renderQ(); }
+}
+
+function nextQ() {
+  if (answers[currentQ] === -1) {
+    if (!confirm('Bu maddeyi atlamak istiyor musunuz?')) return;
+    answers[currentQ] = 0;
+  }
+  if (currentQ === questions.length-1) showResults();
+  else { currentQ++; renderQ(); }
+}
+
+function getSev(score) {
+  if (score <= 7) return { label: 'Minimal', cls: 'sev-normal', color: '#2a7a5a' };
+  if (score <= 15) return { label: 'Hafif', cls: 'sev-mild', color: '#7a5a00' };
+  if (score <= 25) return { label: 'Orta', cls: 'sev-moderate', color: '#7a3a00' };
+  return { label: 'Agir', cls: 'sev-severe', color: '#7a0000' };
+}
+
+function showResults() {
+  document.getElementById('test-section').classList.add('hidden');
+  document.getElementById('result-section').classList.remove('hidden');
+  document.getElementById('progress').style.width = '100%';
+
+  var total = answers.reduce(function(s,a) { return s + (a >= 0 ? a : 0); }, 0);
+  var sev = getSev(total);
+  var date = new Date().toLocaleDateString('tr-TR');
+
+  document.getElementById('result-summary').innerHTML =
+    '<b>' + clientName + '</b> — ' + date + '<br>' +
+    'Toplam Puan: <b>' + total + '</b> / 63 — <span class="badge ' + sev.cls + '">' + sev.label + '</span>';
+
+  var pct = Math.round((total / 63) * 100);
+  document.getElementById('result-detail').innerHTML =
+    '<div class="result-card">' +
+    '<div class="result-title">Beck Anksiyete Puani</div>' +
+    '<div class="score-bar"><div class="score-track"><div class="score-fill" style="width:' + pct + '%;background:' + sev.color + ';">' + total + '</div></div><div class="score-val">' + total + '</div></div>' +
+    '<div style="margin-top:10px;font-size:12px;color:var(--muted);">0-7: Minimal | 8-15: Hafif | 16-25: Orta | 26+: Agir</div>' +
+    '</div>';
+
+  var interp = sev.label === 'Minimal' ? 'Minimal duzey anksiyete belirtisi.' :
+               sev.label === 'Hafif' ? 'Hafif duzey anksiyete belirtisi saptandi.' :
+               sev.label === 'Orta' ? 'Orta duzey anksiyete. Klinik degerlendirme onerilir.' :
+               'Agir duzey anksiyete. Klinik degerlendirme gerekli.';
+
+  var lines = [
+    'Beck Anksiyete Envanteri Sonucu',
+    '================================',
+    'Danisan: ' + clientName,
+    'Tarih: ' + date,
+    '================================',
+    'Toplam Puan: ' + total + ' / 63',
+    'Durum: ' + sev.label,
+    '--------------------------------',
+    interp,
+    '================================',
+    'Denge Psikolojik Danismanlik'
+  ];
+  if (clientPhone) lines.splice(-1, 0, 'Danisan Tel: ' + clientPhone);
+
+  var waEl = document.getElementById('wa-message-edit');
+  if (waEl) waEl.value = lines.join('\n');
+
+  var rp = document.getElementById('result-phone');
+  if (rp) rp.value = therapistPhone || '';
+  var sp = document.getElementById('sender-phone');
+  if (sp) sp.value = clientPhone || '';
+}
+
+function sendResultsWA() {
+  var toPhone = document.getElementById('result-phone')?.value.trim() || therapistPhone;
+  var msg = document.getElementById('wa-message-edit')?.value || '';
+  if (!toPhone) { alert('Lutfen terapist numarasini girin!'); return; }
+  var clean = toPhone.replace(/[^0-9]/g, '');
+  var intl = clean.startsWith('0') ? '90' + clean.slice(1) : clean;
+  window.open('https://wa.me/' + intl + '?text=' + encodeURIComponent(msg), '_blank');
+}
+</script>
+</body>
+</html>
