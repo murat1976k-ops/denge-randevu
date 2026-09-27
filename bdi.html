@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Beck Depresyon Envanteri</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#5ecdc8;--teal2:#3bb8b2;--pink:#f7a8c4;--pink2:#f07fb0;--lavender:#c5b4e3;--mint:#b5ead7;--yellow:#ffe08a;--coral:#ff8c7a;--bg:#f4f9fb;--text:#2d4a52;--muted:#8aa5ad;--border:#d8edf0;--font:'Quicksand',sans-serif;--font2:'Nunito',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;padding:0 0 60px}
+.header{background:linear-gradient(135deg,#3bb8b2,#c5b4e3);padding:28px 20px 20px;text-align:center;color:white}
+.header h1{font-family:var(--font2);font-size:22px;font-weight:900;margin-bottom:4px}
+.header p{font-size:13px;opacity:0.9}
+.section{background:white;margin:14px;border-radius:18px;padding:18px;box-shadow:0 4px 20px rgba(0,0,0,0.07);border:1.5px solid var(--border)}
+.section-title{font-family:var(--font2);font-weight:800;font-size:15px;margin-bottom:12px;color:var(--teal2)}
+.progress-bar{background:var(--border);border-radius:20px;height:8px;margin:0 14px 14px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--lavender));border-radius:20px;transition:width .3s}
+.question-num{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.question-text{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;line-height:1.5}
+.option{padding:12px 14px;border:2px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;background:var(--bg)}
+.option:active{transform:scale(0.98)}
+.option.selected{background:linear-gradient(135deg,var(--teal),var(--teal2));color:white;border-color:var(--teal)}
+.nav-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px}
+.btn{padding:14px;border:none;border-radius:14px;cursor:pointer;font-family:var(--font2);font-weight:800;font-size:15px;transition:all .18s;width:100%}
+.btn-teal{background:linear-gradient(135deg,var(--teal),var(--teal2));color:white;box-shadow:0 4px 14px rgba(94,205,200,0.4)}
+.btn-outline{background:none;border:2px solid var(--teal);color:var(--teal2)}
+.btn-prev{opacity:0.6}
+.hidden{display:none}
+.result-card{background:var(--bg);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border)}
+.result-title{font-family:var(--font2);font-weight:800;font-size:14px;margin-bottom:8px}
+.score-bar{display:flex;align-items:center;gap:10px}
+.score-track{flex:1;background:var(--border);border-radius:20px;height:22px;overflow:hidden}
+.score-fill{height:100%;border-radius:20px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:white;min-width:30px;transition:width .5s}
+.score-val{font-family:var(--font2);font-weight:800;font-size:16px;width:36px;text-align:right}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.sev-normal{background:#e8f8f0;color:#2a7a5a}
+.sev-mild{background:#fff8e0;color:#7a5a00}
+.sev-moderate{background:#fff0e0;color:#7a3a00}
+.sev-severe{background:#ffe0e0;color:#7a0000}
+.wa-btn{background:linear-gradient(135deg,#25d366,#128c7e);color:white;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;width:100%;border:none;cursor:pointer;font-family:var(--font2);font-weight:800;font-size:15px;margin-top:10px;box-shadow:0 4px 14px rgba(37,211,102,0.4)}
+label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:5px;margin-top:10px}
+input{width:100%;padding:11px 13px;border:2px solid var(--border);border-radius:12px;font-family:var(--font);font-size:16px;color:var(--text);background:var(--bg);outline:none;-webkit-appearance:none}
+input:focus{border-color:var(--teal);background:white}
+textarea{width:100%;padding:11px;border:2px solid var(--border);border-radius:12px;font-family:var(--font);font-size:13px;min-height:140px;resize:vertical;outline:none;-webkit-appearance:none}
+textarea:focus{border-color:var(--teal);background:white}
+.info-box{background:rgba(94,205,200,0.1);border:1.5px solid var(--teal);border-radius:12px;padding:12px;font-size:13px;color:var(--teal2);font-weight:600;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧠 Beck Depresyon Envanteri</h1>
+  <p id="client-greeting">Lütfen her soruyu dikkatle okuyun</p>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+<!-- INTRO -->
+<div id="intro-section">
+  <div class="section">
+    <div class="section-title">📋 Test Hakkında</div>
+    <p style="font-size:13px;line-height:1.7;color:var(--muted);">Bu test <b>son 2 hafta</b> içinde kendinizi nasıl hissettiğinizi ölçmektedir. <b>21 soru</b> içermekte ve yaklaşık <b>5-10 dakika</b> sürmektedir.</p>
+    <p style="font-size:13px;line-height:1.7;color:var(--muted);margin-top:8px;">Her soru için size en uygun ifadeyi seçin.</p>
+    <div style="background:rgba(255,224,138,0.2);border:1.5px solid var(--yellow);border-radius:12px;padding:12px;margin-top:12px;font-size:13px;color:#7a5a00;font-weight:600;">⚠️ Bu test klinik tanı koymaz. Sonuçlar yalnızca danışman tarafından değerlendirilir.</div>
+    <button class="btn btn-teal" onclick="startTest()" style="margin-top:16px;">▶️ Teste Başla</button>
+  </div>
+</div>
+
+<!-- TEST -->
+<div id="test-section" class="hidden">
+  <div class="section">
+    <div class="question-num" id="q-num">Soru 1 / 21</div>
+    <div class="question-text" id="q-text"></div>
+    <div id="q-options"></div>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-outline btn-prev" id="prev-btn" onclick="prevQ()">‹ Önceki</button>
+    <button class="btn btn-teal" id="next-btn" onclick="nextQ()">Sonraki ›</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-section" class="hidden">
+  <div class="section">
+    <div class="section-title">📊 Sonuçlarınız</div>
+    <div class="info-box" id="result-summary"></div>
+    <div id="result-detail"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">💬 Sonucu Terapistinize Gönderin</div>
+    <label>Gönderen Numara (Sizin Numaranız)</label>
+    <input type="tel" id="sender-phone" placeholder="05XX XXX XX XX">
+    <label>Terapist WhatsApp Numarası</label>
+    <input type="tel" id="result-phone" placeholder="05XX XXX XX XX">
+    <label>Gönderilecek Mesaj</label>
+    <textarea id="wa-message-edit"></textarea>
+    <button class="wa-btn" onclick="sendResultsWA()">💬 WhatsApp ile Gönder</button>
+  </div>
+  <div style="margin:14px;">
+    <button class="btn btn-outline" onclick="window.close()">✅ Tamamla</button>
+  </div>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+var clientName = 'Danisan';
+var clientPhone = '';
+var therapistPhone = '';
+try { clientName = decodeURIComponent(urlParams.get('name') || 'Danisan'); } catch(e) { clientName = urlParams.get('name') || 'Danisan'; }
+try { clientPhone = decodeURIComponent(urlParams.get('phone') || ''); } catch(e) { clientPhone = urlParams.get('phone') || ''; }
+try { therapistPhone = decodeURIComponent(urlParams.get('therapist') || ''); } catch(e) { therapistPhone = urlParams.get('therapist') || ''; }
+
+window.onload = function() {
+  var greet = document.getElementById('client-greeting');
+  if (greet) greet.textContent = 'Sayin ' + clientName + ', lutfen her soruyu dikkatle okuyun';
+  var rp = document.getElementById('result-phone');
+  if (rp) rp.value = therapistPhone || '';
+  var sp = document.getElementById('sender-phone');
+  if (sp) sp.value = clientPhone || '';
+};
+
+const questions = [
+  { text: '1. Üzüntü', options: ['Kendimi üzgün hissetmiyorum.','Kendimi üzgün hissediyorum.','Her zaman üzgünüm ve kendimi bu duygudan kurtaramıyorum.','O kadar üzgün ve mutsuzum ki dayanamıyorum.'] },
+  { text: '2. Karamsarlık', options: ['Gelecekten umutsuz değilim.','Gelecek konusunda umutsuzum.','Gelecekten beklentim yok.','Gelecek bana çok karanlık görünüyor ve hiç iyi olmayacak.'] },
+  { text: '3. Başarısızlık Duygusu', options: ['Kendimi başarısız görmüyorum.','Çevremdeki diğer insanlara göre daha fazla başarısız olduğumu düşünüyorum.','Geçmişe baktığımda pek çok başarısızlıkla karşılaşıyorum.','Kendimi tamamen başarısız biri olarak görüyorum.'] },
+  { text: '4. Zevk Alamama', options: ['Her şeyden zevk aldığım eskiye göre azalmadı.','Eskisi kadar zevk almıyorum.','Artık hiçbir şeyden gerçek bir zevk alamıyorum.','Her şeyden sıkılıyorum, hiçbir şey zevk vermiyor.'] },
+  { text: '5. Suçluluk Duygusu', options: ['Kendimi özellikle suçlu hissetmiyorum.','Kendimi çoğu zaman suçlu hissediyorum.','Çoğu zaman kendimi oldukça suçlu hissediyorum.','Kendimi her zaman suçlu hissediyorum.'] },
+  { text: '6. Cezalandırılma Duygusu', options: ['Cezalandırılacağımı sanmıyorum.','Cezalandırılabileceğimi hissediyorum.','Cezalandırılacağımı bekliyorum.','Cezalandırıldığımı hissediyorum.'] },
+  { text: '7. Kendinden Nefret', options: ['Kendimden nefret etmiyorum.','Kendimden sıkıldım.','Kendimden iğreniyorum.','Kendimden nefret ediyorum.'] },
+  { text: '8. Kendini Suçlama', options: ['Kendimi diğerlerinden daha kötü görmüyorum.','Zayıf ya da yetersiz olduğum konusunda kendimi eleştiriyorum.','Yaptığım hatalar için sürekli kendimi suçluyorum.','Her kötü şey olduğunda kendimi suçluyorum.'] },
+  { text: '9. İntihar Düşünceleri', options: ['Kendime zarar verme ya da intihar etme düşüncelerim yok.','Kendime zarar vermeyi bazen düşünüyorum ama bunu hiç gerçekleştirmeyeceğim.','İntihar etmek istiyorum.','Fırsatım olsa kendimi öldürürdüm.'] },
+  { text: '10. Ağlama', options: ['Her zamankinden daha fazla ağlamıyorum.','Eskisinden daha fazla ağlıyorum.','Şimdi her zaman ağlıyorum.','Eskiden ağlayabiliyordum, şimdi istesem de ağlayamıyorum.'] },
+  { text: '11. Sinirlilik', options: ['Her zamankinden daha sinirli değilim.','Her zamankinden biraz daha sinirli ve huzursuzdayım.','Çoğu zaman sinirliyim.','Sürekli sinirli hissediyorum.'] },
+  { text: '12. Sosyal Çekilme', options: ['Diğer insanlara karşı ilgimi kaybetmedim.','Eskisine göre diğer insanlarla daha az ilgileniyorum.','Diğer insanlara olan ilgimin büyük bölümünü yitirdim.','Diğer insanlara olan tüm ilgimi yitirdim.'] },
+  { text: '13. Kararsızlık', options: ['Eskisi kadar iyi karar veriyorum.','Eskisine göre karar vermekten daha çok kaçınıyorum.','Karar vermekte çok güçlük çekiyorum.','Artık hiç karar veremiyorum.'] },
+  { text: '14. Değersizlik Duygusu', options: ['Eskisi kadar iyi göründüğümü düşünüyorum.','Yaşlandığım ya da çekiciliğimi yitirdiğim konusunda endişeleniyorum.','Görünümümde artık geri döndürülemez değişiklikler olduğunu ve çirkinleştiğimi hissediyorum.','Kendimi çok çirkin buluyorum.'] },
+  { text: '15. Çalışma Güçlüğü', options: ['Eskisi kadar iyi çalışabiliyorum.','Bir şeyler yapmak için kendimi zorlamak zorundayım.','Herhangi bir şeyi yapabilmek için kendimi çok zorlamak zorundayım.','Hiç çalışamıyorum.'] },
+  { text: '16. Uyku Bozukluğu', options: ['Her zamankinden daha kötü uyumuyorum.','Eskisi kadar iyi uyuyamıyorum.','Normalden 1-2 saat önce uyanıyorum ve tekrar uyuyamıyorum.','Normalden birkaç saat önce uyanıyorum ve tekrar uyuyamıyorum.'] },
+  { text: '17. Yorgunluk', options: ['Eskisinden daha fazla yorulmuyorum.','Eskisinden daha çabuk yoruluyorum.','Yaptığım her şey beni yoruyor.','Herhangi bir şey yapamayacak kadar yorgunum.'] },
+  { text: '18. İştah Bozukluğu', options: ['İştahım eskisi kadar iyi.','İştahım eskisi kadar iyi değil.','İştahım çok azaldı.','Artık hiç iştahım yok.'] },
+  { text: '19. Kilo Kaybı', options: ['Son zamanlarda fazla kilo kaybetmedim.','Son zamanlarda 2 kilodan fazla kilo verdim.','Son zamanlarda 5 kilodan fazla kilo verdim.','Son zamanlarda 7 kilodan fazla kilo verdim.'] },
+  { text: '20. Bedensel Yakınmalar', options: ['Sağlığım konusunda normalden fazla endişelenmiyorum.','Ağrılar, mide bozukluğu, kabızlık gibi bedensel sorunlarla aşırı ilgileniyorum.','Bu bedensel sorunları düşünmekten başka bir şey yapamıyorum.','Bu bedensel sorunlar beni çok rahatsız ediyor.'] },
+  { text: '21. Cinsel İsteksizlik', options: ['Son zamanlarda seks konusunda herhangi bir değişiklik fark etmedim.','Cinsel konularla eskisinden daha az ilgileniyorum.','Cinsel konularla çok daha az ilgileniyorum.','Cinsel konulardaki ilgimi tamamen yitirdim.'] }
+];
+
+var answers = new Array(21).fill(-1);
+var currentQ = 0;
+
+function startTest() {
+  document.getElementById('intro-section').classList.add('hidden');
+  document.getElementById('test-section').classList.remove('hidden');
+  renderQ();
+}
+
+function renderQ() {
+  const q = questions[currentQ];
+  document.getElementById('q-num').textContent = 'Soru ' + (currentQ+1) + ' / ' + questions.length;
+  document.getElementById('q-text').textContent = q.text;
+  var html = '';
+  q.options.forEach(function(opt, i) {
+    html += '<div class="option' + (answers[currentQ] === i ? ' selected' : '') + '" onclick="selectAnswer(' + i + ')">' + opt + '</div>';
+  });
+  document.getElementById('q-options').innerHTML = html;
+  document.getElementById('prev-btn').style.opacity = currentQ === 0 ? '0.3' : '1';
+  document.getElementById('next-btn').textContent = currentQ === questions.length-1 ? '✅ Tamamla' : 'Sonraki ›';
+  var pct = Math.round(((currentQ) / questions.length) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  window.scrollTo(0, 0);
+}
+
+function selectAnswer(i) {
+  answers[currentQ] = i;
+  renderQ();
+}
+
+function prevQ() {
+  if (currentQ > 0) { currentQ--; renderQ(); }
+}
+
+function nextQ() {
+  if (answers[currentQ] === -1) {
+    if (!confirm('Bu soruyu atlamak istiyor musunuz?')) return;
+    answers[currentQ] = 0;
+  }
+  if (currentQ === questions.length-1) { showResults(); }
+  else { currentQ++; renderQ(); }
+}
+
+function getSev(score) {
+  if (score <= 9) return { label: 'Minimal', cls: 'sev-normal', color: '#2a7a5a' };
+  if (score <= 18) return { label: 'Hafif', cls: 'sev-mild', color: '#7a5a00' };
+  if (score <= 29) return { label: 'Orta', cls: 'sev-moderate', color: '#7a3a00' };
+  return { label: 'Agir', cls: 'sev-severe', color: '#7a0000' };
+}
+
+function showResults() {
+  document.getElementById('test-section').classList.add('hidden');
+  document.getElementById('result-section').classList.remove('hidden');
+  document.getElementById('progress').style.width = '100%';
+
+  var total = answers.reduce(function(s,a) { return s + (a >= 0 ? a : 0); }, 0);
+  var sev = getSev(total);
+  var date = new Date().toLocaleDateString('tr-TR');
+
+  document.getElementById('result-summary').innerHTML =
+    '<b>' + clientName + '</b> — ' + date + '<br>' +
+    'Toplam Puan: <b>' + total + '</b> / 63 — <span class="badge ' + sev.cls + '">' + sev.label + '</span>';
+
+  var pct = Math.round((total / 63) * 100);
+  document.getElementById('result-detail').innerHTML =
+    '<div class="result-card">' +
+    '<div class="result-title">Beck Depresyon Puani</div>' +
+    '<div class="score-bar"><div class="score-track"><div class="score-fill" style="width:' + pct + '%;background:' + sev.color + ';">' + total + '</div></div><div class="score-val">' + total + '</div></div>' +
+    '<div style="margin-top:10px;font-size:12px;color:var(--muted);">0-9: Minimal | 10-18: Hafif | 19-29: Orta | 30+: Agir</div>' +
+    '</div>';
+
+  // Build WA message
+  var interp = sev.label === 'Minimal' ? 'Minimal duzey depresyon belirtisi.' :
+               sev.label === 'Hafif' ? 'Hafif duzey depresyon belirtisi saptandi.' :
+               sev.label === 'Orta' ? 'Orta duzey depresyon. Klinik degerlendirme onerilir.' :
+               'Agir duzey depresyon. Klinik degerlendirme gerekli.';
+
+  var lines = [
+    'Beck Depresyon Envanteri Sonucu',
+    '================================',
+    'Danisan: ' + clientName,
+    'Tarih: ' + date,
+    '================================',
+    'Toplam Puan: ' + total + ' / 63',
+    'Durum: ' + sev.label,
+    '--------------------------------',
+    interp,
+    '================================',
+    'Denge Psikolojik Danismanlik'
+  ];
+  if (clientPhone) lines.splice(-1, 0, 'Danisan Tel: ' + clientPhone);
+
+  var waEl = document.getElementById('wa-message-edit');
+  if (waEl) waEl.value = lines.join('\n');
+
+  var rp = document.getElementById('result-phone');
+  if (rp) rp.value = therapistPhone || '';
+  var sp = document.getElementById('sender-phone');
+  if (sp) sp.value = clientPhone || '';
+}
+
+function sendResultsWA() {
+  var toPhone = document.getElementById('result-phone')?.value.trim() || therapistPhone;
+  var msg = document.getElementById('wa-message-edit')?.value || '';
+  if (!toPhone) { alert('Lutfen terapist numarasini girin!'); return; }
+  var clean = toPhone.replace(/[^0-9]/g, '');
+  var intl = clean.startsWith('0') ? '90' + clean.slice(1) : clean;
+  window.open('https://wa.me/' + intl + '?text=' + encodeURIComponent(msg), '_blank');
+}
+</script>
+</body>
+</html>
